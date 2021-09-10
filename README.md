@@ -1,0 +1,2 @@
+# astratic
+Proyecto TIC
