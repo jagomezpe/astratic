@@ -4,19 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/estilos.css">
     <title>Login</title>
 </head>
 <body>
-    <h1>Iniciar Sesión</h1>
-    <form>
-        <label for="usuario">
-            <input name="usuario" placeholder="Nombre de usuario"/>
-        </label>
-        <br>
-        <label for="contrasenia">
-            <input type="password" placeholder="Contraseña">
-        </label>
-    </form>
-    <button>Iniciar sesión</button>
+    <div class="contenedor">
+        <div class="central">
+            <div class="login">
+                <div class="titutlo">
+                    Inicio de sesión
+                </div>
+                <form class="loginform">
+                    <input type="text" name="usuario" placeholder="Nombre de usuario">
+                    <input type="password" name="contrasenia" placeholder="Contraseña">
+
+                    <button type="submit" title="ingresar" name="ingresar">Iniciar sesión</button>
+                </form>
+                <div class="pieContenedor">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
