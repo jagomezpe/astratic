@@ -3,29 +3,39 @@ import { Link } from 'react-router-dom'
 
 const Login = () => {
     return (
-        <div className='flex flex-col justify-center items-center w-full'>
-            <h2 className='m-3 text-center text-3xl font-bold text-gray-900'>Inicio de sesión</h2>
-            <form className='mt-4 max-w-sm'>
-                <div>
-                    ¿Eres un nuevo usuario?
-                    <Link to='/registro'>
-                    Crea una cuenta
-                    </Link>
-                </div>
-                <div>
-                    <h6>Dirección de correo electrónico</h6>
-                    <input className='appeareance-none focus:outline-none relative block w-full px-3 py-2 border-b border-gray-300 text-gray-900 font-semibold focus:border-blue-600 focus:z-10 sm:text-sm' type="email" required/>
-                    <h6>Contraseña</h6>
-                    <input className='appeareance-none focus:outline-none relative block w-full px-3 py-2 border-b border-gray-300 text-gray-900 font-semibold focus:border-blue-600 focus:z-10 sm:text-sm' type="password" required/>
-                </div>
+        <div className='max-w-md w-full'>
+            <h2 className='text-center text-3xl font-bold text-white'>Inicio de sesión</h2>
+            <div className='text-gray-700 text-center mb-1 mt-4'>
+                ----------------------------------------------------------------------
+            </div>
+            <form className='max-w-md'>
                 <div className='flex justify-between'>
-                    <div>
-                        <label htmlFor="recuerdame">
-                            <input type="checkbox" />
+                    <div className='text-gray-400'>
+                        ¿Eres un nuevo usuario?
+                    </div>
+                    <div className='text-blue-500 hover:text-blue-400'>
+                        <Link to='/registro'>
+                            Crea una cuenta
+                        </Link>
+                    </div>
+                </div>
+                <div className='text-gray-700 text-center mb-5 mt-2'>
+                    ----------------------------------------------------------------------
+                </div>
+                <div>
+                    <h6 className='text-gray-200 font-semibold text-xs'>Dirección de correo electrónico</h6>
+                    <input className='appeareance-none focus:outline-none relative block w-full px-3 py-2 border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white' type="email" required/>
+                    <h6 className='text-gray-200 font-semibold text-xs mt-5'>Contraseña</h6>
+                    <input className='appeareance-none focus:outline-none relative block w-full px-3 py-2 border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white' type="password" required/>
+                </div>
+                <div className='flex justify-between mt-5'>
+                    <div className='flex items-center'>
+                        <input type="checkbox" name="recuerdame" className='h-4 w-4'/>
+                        <label htmlFor="recuerdame" className="ml-2 block text-sm text-gray-400">
                             Recuerda mis datos
                         </label>
                     </div>
-                    <div>
+                    <div className='text-blue-500 hover:text-blue-400 text-sm'>
                         <Link to='/'>
                             Olvidé mi contraseña
                         </Link>

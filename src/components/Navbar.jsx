@@ -11,7 +11,7 @@ const Navbar = () => {
                 <li>Opción3</li>
                 <li className='px-3'>
                     <Link to='/login'>
-                        <button className='bg-blue-600 p-1 px-3 text-white rounded-full hover:bg-blue-800'>
+                        <button className='bg-blue-500 p-1 px-3 text-white rounded-full hover:bg-blue-800'>
                             Iniciar Sesión
                         </button>
                     </Link>
