@@ -1,4 +1,5 @@
 import React from 'react'
+import Google from 'media/logo-google.png'
 import { Link } from 'react-router-dom'
 
 const Login = () => {
@@ -31,7 +32,7 @@ const Login = () => {
                 <div className='flex justify-between mt-5'>
                     <div className='flex items-center'>
                         <input type="checkbox" name="recuerdame" className='h-4 w-4'/>
-                        <label htmlFor="recuerdame" className="ml-2 block text-sm text-gray-400">
+                        <label htmlFor="recuerdame" className="ml-2 text-sm text-gray-400">
                             Recuerda mis datos
                         </label>
                     </div>
@@ -41,19 +42,26 @@ const Login = () => {
                         </Link>
                     </div>
                 </div>
-                <div>
+                <div className='mt-9'>
                     <Link to='/admin'>
-                        <button type="submit">
+                        <button type="submit"
+                        className='flex items-center justify-center w-full bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 font-semibold text-base'>
                             Iniciar Sesión
                         </button>
                     </Link>
                 </div>
-                <div>
+                <div className='flex items-center justify-between text-gray-400 my-3'>
+                    <span className='text-gray-700'>---------------------------------</span>
                     O
+                    <span className='text-gray-700'>---------------------------------</span>
                 </div>
                 <div>
-                    <button>
-                        Continua con Google
+                    <button type="submit"
+                    className='flex items-center justify-center w-full bg-gray-200 p-2 text-gray-900 rounded-full hover:bg-gray-300 font-semibold text-base'>
+                        <div className='group flex justify-center items-center'>
+                            <img src={Google} alt="Logo Google" className='h-4 w-4'/>
+                            <span className='mx-4'>Continúa con Google</span>
+                        </div>
                     </button>
                 </div>
             </form>
