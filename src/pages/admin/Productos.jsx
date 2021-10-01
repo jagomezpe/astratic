@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const Productos = () => {
     return (
-        <div>
-            Administración de Productos
-        </div>
+        <form action="">
+
+        </form>
     )
 }
 
