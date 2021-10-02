@@ -6,12 +6,12 @@ const PrivateLayout = ({children}) => {
     return (
         <div className="flex flex-col justify-between h-screen">
             <Sidebar/>
-            <div className="h-full overflow-y-scroll bg-blue-400">
-                <main className="h-full">
+            <div className='min-h-screen flex flex-col items-center justify-center lg:px-10 bg-gray-900'>
+                <main className='max-w-lg w-full'>
                     {children}
                 </main>
-                <Footer/>
             </div>
+            <Footer/>
         </div>
     )
 }
