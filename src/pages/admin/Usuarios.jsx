@@ -1,4 +1,6 @@
 import React, { useEffect, useState} from 'react'
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const Usuarios = () => {
     const [mostrarTabla, setMostrarTabla] = useState(false)
@@ -7,8 +9,6 @@ export const Usuarios = () => {
 
     const usuariosBackend = [
         {
-            editar: <button>Editar</button>,
-            eliminar: <button>Eliminar</button>,
             IDUsuario: "123ABC",
             documentoIdentidad: "1088000789",
             nombre: "Amapola",
@@ -19,20 +19,16 @@ export const Usuarios = () => {
             estado: "AUTORIZADO"
         },
         {
-            editar: <button>Editar</button>,
-            eliminar: <button>Eliminar</button>,
             IDUsuario: "456DEF",
             documentoIdentidad: "1077111654",
             nombre: "Patricia Ana",
             apellidos: "Tugillo",
             numeroCelular: 3117772222,
             correoElectronico: "patana@email.com",
-            rol: "-",
+            rol: "No Asignado",
             estado: "PENDIENTE"
         },
         {
-            editar: <button>Editar</button>,
-            eliminar: <button>Eliminar</button>,
             IDUsuario: "789GHI",
             documentoIdentidad: "1099555123",
             nombre: "Ébano",
@@ -63,7 +59,11 @@ export const Usuarios = () => {
             <button onClick={()=>{setMostrarTabla(!mostrarTabla)}} className='flex items-center justify-center bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 font-semibold text-base mx-40'>
                 {textoBoton}
             </button>
-            {mostrarTabla ? <TablaUsuarios listaUsuarios={usuarios}/> : <FormularioCreacionUsuario/>}
+            {mostrarTabla ? <TablaUsuarios listaUsuarios={usuarios}/> : 
+            <FormularioCreacionUsuario funcionMostrarTabla = {setMostrarTabla} listaUsuarios = {usuarios} funcionAgregarUsuario= {setUsuarios}/>}
+            <ToastContainer
+            position="bottom-center"
+            autoClose={5000}/>
         </div>
     )
 }
@@ -84,8 +84,6 @@ const TablaUsuarios = ({listaUsuarios}) => {
             <table className='text-white'>
                 <thead>
                     <tr>
-                        <th>Editar</th>
-                        <th>Eliminar</th>
                         <th>ID Usuario</th>
                         <th>Documento</th>
                         <th>Nombre</th>
@@ -100,8 +98,6 @@ const TablaUsuarios = ({listaUsuarios}) => {
                     {listaUsuarios.map((usuario)=> {
                         return (
                             <tr>
-                                <td>{usuario.editar}</td>
-                                <td>{usuario.eliminar}</td>
                                 <td>{usuario.IDUsuario}</td>
                                 <td>{usuario.documentoIdentidad}</td>
                                 <td>{usuario.nombre}</td>
@@ -119,7 +115,22 @@ const TablaUsuarios = ({listaUsuarios}) => {
     )
 }
 
-const FormularioCreacionUsuario = () => {
+const FormularioCreacionUsuario = ({funcionMostrarTabla, listaUsuarios, funcionAgregarUsuario}) => {
+    const [IDUsuario, setIDUsuario] = useState()
+    const [documentoIdentidad, setDocumentoIdentidad] = useState()
+    const [nombre, setNombre] = useState()
+    const [apellidos, setApellidos] = useState()
+    const [numeroCelular, setNumeroCelular] = useState()
+    const [correoElectronico, setCorreoElectronico] = useState()
+    const [rol, setRol] = useState()
+    const [estado, setEstado] = useState()
+
+    const enviarAlBackend = () => {
+        console.log(IDUsuario, documentoIdentidad, nombre, apellidos, numeroCelular, correoElectronico, rol, estado)
+        toast.success('Usuario agregado con éxito', {theme:"colored", transition: Slide})
+        funcionMostrarTabla(true)
+        funcionAgregarUsuario([...listaUsuarios,{IDUsuario:IDUsuario, documentoIdentidad:documentoIdentidad, nombre:nombre, apellidos:apellidos, numeroCelular:numeroCelular, correoElectronico:correoElectronico, rol:rol, estado:estado}])
+    }
     return (
         <div>
             <div className='text-gray-700 text-center'>
@@ -130,47 +141,67 @@ const FormularioCreacionUsuario = () => {
                     ----------------------------------------------------------------------
             </div>
             <form className='grid grid-cols-2'>
-                <div>
+                <label htmlFor="IDUsuario">
                     <h6 className='text-gray-200 font-semibold text-xs'>ID del Usuario</h6>
                     <input type="text" required
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white'/>
-                </div>
-                <div>
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
+                    value={IDUsuario} onChange={(e)=>{setIDUsuario(e.target.value)}}/>
+                </label>
+                <label htmlFor="documentoIdentidad">
                     <h6 className='text-gray-200 font-semibold text-xs'>Documento de Identidad</h6>
                     <input type="text" required
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white'/>
-                </div>
-                <div>
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
+                    value={documentoIdentidad} onChange={(e)=>{setDocumentoIdentidad(e.target.value)}}/>
+                </label>
+                <label htmlFor="nombre">
                     <h6 className='text-gray-200 font-semibold text-xs'>Nombre</h6>
                     <input type="text" required
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white'/>
-                </div>
-                <div>
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
+                    value={nombre} onChange={(e)=>{setNombre(e.target.value)}}/>
+                </label>
+                <label htmlFor="apellidos">
                     <h6 className='text-gray-200 font-semibold text-xs'>Apellidos</h6>
                     <input type="text" required
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white'/>
-                </div>
-                <div>
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
+                    value={apellidos} onChange={(e)=>{setApellidos(e.target.value)}}/>
+                </label>
+                <label htmlFor="numeroCelular">
                     <h6 className='text-gray-200 font-semibold text-xs'>Número Celular</h6>
                     <input type="tel" required
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white'/>
-                </div>
-                <div>
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
+                    value={numeroCelular} onChange={(e)=>{setNumeroCelular(e.target.value)}}/>
+                </label>
+                <label htmlFor="correoElectronico">
                     <h6 className='text-gray-200 font-semibold text-xs'>Correo Electrónico</h6>
                     <input type="email" required
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white'/>
-                </div>
-                <div>
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
+                    value={correoElectronico} onChange={(e)=>{setCorreoElectronico(e.target.value)}}/>
+                </label>
+                <label htmlFor="rol">
                     <h6 className='text-gray-200 font-semibold text-xs'>Rol</h6>
-                    <input type="text" required
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white'/>
-                </div>
-                <div>
+                    <select name="rol"
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
+                    value={rol} onChange={(e)=>{setRol(e.target.value)}}>
+                        <option disabled>Seleccione el Rol</option>
+                        <option>Administrador</option>
+                        <option>Vendedor</option>
+                        <option>No Asignado</option>
+                    </select>
+                </label>
+                <label htmlFor="estado">
                     <h6 className='text-gray-200 font-semibold text-xs'>Estado</h6>
-                    <input type="text" required
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white'/>
-                </div>
-                <button className='col-span-2 flex items-center justify-center w-full bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 font-semibold text-base'>
+                    <select name="estado"
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
+                    value={estado} onChange={(e)=>{setEstado(e.target.value)}}>
+                        <option disabled>Seleccione el Estado</option>
+                        <option>AUTORIZADO</option>
+                        <option>NO AUTORIZADO</option>
+                        <option>PENDIENTE</option>
+                    </select>
+                </label>
+                <button type="button"
+                className='col-span-2 flex items-center justify-center w-full bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 font-semibold text-base'
+                onClick={()=>{enviarAlBackend()}}>
                     Guardar Usuario
                 </button>
             </form>
