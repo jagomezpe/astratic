@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -43,7 +43,7 @@ export const Usuarios = () => {
     useEffect(()=> {
         // Obtener listas de usuarios desde el backend
         setUsuarios(usuariosBackend)
-    }, [])
+    },[])
 
     useEffect (()=>{
         if (mostrarTabla) {
@@ -60,7 +60,7 @@ export const Usuarios = () => {
                 {textoBoton}
             </button>
             {mostrarTabla ? <TablaUsuarios listaUsuarios={usuarios}/> : 
-            <FormularioCreacionUsuario funcionMostrarTabla = {setMostrarTabla} listaUsuarios = {usuarios} funcionAgregarUsuario= {setUsuarios}/>}
+            <FormularioCreacionUsuario setMostrarTabla = {setMostrarTabla} listaUsuarios = {usuarios} setUsuarios= {setUsuarios}/>}
             <ToastContainer
             position="bottom-center"
             autoClose={5000}/>
@@ -115,22 +115,22 @@ const TablaUsuarios = ({listaUsuarios}) => {
     )
 }
 
-const FormularioCreacionUsuario = ({funcionMostrarTabla, listaUsuarios, funcionAgregarUsuario}) => {
-    const [IDUsuario, setIDUsuario] = useState()
-    const [documentoIdentidad, setDocumentoIdentidad] = useState()
-    const [nombre, setNombre] = useState()
-    const [apellidos, setApellidos] = useState()
-    const [numeroCelular, setNumeroCelular] = useState()
-    const [correoElectronico, setCorreoElectronico] = useState()
-    const [rol, setRol] = useState()
-    const [estado, setEstado] = useState()
+const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}) => {
+    const form = useRef(null)
 
-    const enviarAlBackend = () => {
-        console.log(IDUsuario, documentoIdentidad, nombre, apellidos, numeroCelular, correoElectronico, rol, estado)
-        toast.success('Usuario agregado con éxito', {theme:"colored", transition: Slide})
-        funcionMostrarTabla(true)
-        funcionAgregarUsuario([...listaUsuarios,{IDUsuario:IDUsuario, documentoIdentidad:documentoIdentidad, nombre:nombre, apellidos:apellidos, numeroCelular:numeroCelular, correoElectronico:correoElectronico, rol:rol, estado:estado}])
+    const submitForm = (e) => {
+        e.preventDefault()
+        const formData = new FormData(form.current)
+
+        const nuevoUsuario = {}
+        formData.forEach((value, key) => {
+            nuevoUsuario[key] = value
+        })
+        setMostrarTabla(true)
+        toast.success("Usuario agregado con éxito", {theme:"colored", transition: Slide})
+        setUsuarios([...listaUsuarios, nuevoUsuario])
     }
+
     return (
         <div>
             <div className='text-gray-700 text-center'>
@@ -140,49 +140,49 @@ const FormularioCreacionUsuario = ({funcionMostrarTabla, listaUsuarios, funcionA
             <div className='text-gray-700 text-center'>
                     ----------------------------------------------------------------------
             </div>
-            <form className='grid grid-cols-2'>
+            <form ref={form} onSubmit={submitForm} className='grid grid-cols-2'>
                 <label htmlFor="IDUsuario">
                     <h6 className='text-gray-200 font-semibold text-xs'>ID del Usuario</h6>
-                    <input type="text" required
+                    <input type="text" name="IDUsuario"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
-                    value={IDUsuario} onChange={(e)=>{setIDUsuario(e.target.value)}}/>
+                    required/>
                 </label>
                 <label htmlFor="documentoIdentidad">
                     <h6 className='text-gray-200 font-semibold text-xs'>Documento de Identidad</h6>
-                    <input type="text" required
+                    <input type="text" name="documentoIdentidad"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
-                    value={documentoIdentidad} onChange={(e)=>{setDocumentoIdentidad(e.target.value)}}/>
+                    required/>
                 </label>
                 <label htmlFor="nombre">
                     <h6 className='text-gray-200 font-semibold text-xs'>Nombre</h6>
-                    <input type="text" required
+                    <input type="text" name="nombre"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
-                    value={nombre} onChange={(e)=>{setNombre(e.target.value)}}/>
+                    required/>
                 </label>
                 <label htmlFor="apellidos">
                     <h6 className='text-gray-200 font-semibold text-xs'>Apellidos</h6>
-                    <input type="text" required
+                    <input type="text" name="apellidos"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
-                    value={apellidos} onChange={(e)=>{setApellidos(e.target.value)}}/>
+                    required/>
                 </label>
                 <label htmlFor="numeroCelular">
                     <h6 className='text-gray-200 font-semibold text-xs'>Número Celular</h6>
-                    <input type="tel" required
+                    <input type="tel" name="numeroCelular"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
-                    value={numeroCelular} onChange={(e)=>{setNumeroCelular(e.target.value)}}/>
+                    required/>
                 </label>
                 <label htmlFor="correoElectronico">
                     <h6 className='text-gray-200 font-semibold text-xs'>Correo Electrónico</h6>
-                    <input type="email" required
+                    <input type="email" name="correoElectronico"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
-                    value={correoElectronico} onChange={(e)=>{setCorreoElectronico(e.target.value)}}/>
+                    required/>
                 </label>
                 <label htmlFor="rol">
                     <h6 className='text-gray-200 font-semibold text-xs'>Rol</h6>
                     <select name="rol"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
-                    value={rol} onChange={(e)=>{setRol(e.target.value)}}>
-                        <option disabled>Seleccione el Rol</option>
+                    required defaultValue={0}>
+                        <option disabled value={0}>Seleccione el Rol</option>
                         <option>Administrador</option>
                         <option>Vendedor</option>
                         <option>No Asignado</option>
@@ -192,16 +192,15 @@ const FormularioCreacionUsuario = ({funcionMostrarTabla, listaUsuarios, funcionA
                     <h6 className='text-gray-200 font-semibold text-xs'>Estado</h6>
                     <select name="estado"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white'
-                    value={estado} onChange={(e)=>{setEstado(e.target.value)}}>
-                        <option disabled>Seleccione el Estado</option>
+                    required defaultValue={0}>
+                        <option disabled value={0}>Seleccione el Estado</option>
                         <option>AUTORIZADO</option>
                         <option>NO AUTORIZADO</option>
                         <option>PENDIENTE</option>
                     </select>
                 </label>
-                <button type="button"
-                className='col-span-2 flex items-center justify-center w-full bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 font-semibold text-base'
-                onClick={()=>{enviarAlBackend()}}>
+                <button type="submit"
+                className='col-span-2 flex items-center justify-center w-full bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 font-semibold text-base'>
                     Guardar Usuario
                 </button>
             </form>
