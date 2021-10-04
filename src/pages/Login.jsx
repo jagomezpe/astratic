@@ -24,10 +24,10 @@ const Login = () => {
                     ----------------------------------------------------------------------
                 </div>
                 <div>
-                    <h6 className='text-gray-200 font-semibold text-xs'>Dirección de correo electrónico</h6>
-                    <input className='appeareance-none focus:outline-none relative block w-full px-3 py-2 border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white' type="email" required/>
+                    <h6 className='text-gray-200 font-semibold text-xs'>Correo electrónico o nombre de usuario</h6>
+                    <input className='appeareance-none focus:outline-none relative block w-full py-2 border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white' type="email" required/>
                     <h6 className='text-gray-200 font-semibold text-xs mt-5'>Contraseña</h6>
-                    <input className='appeareance-none focus:outline-none relative block w-full px-3 py-2 border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white' type="password" required/>
+                    <input className='appeareance-none focus:outline-none relative block w-full py-2 border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 focus:z-10 sm:text-sm bg-gray-900 hover:border-white' type="password" required/>
                 </div>
                 <div className='flex justify-between mt-5'>
                     <div className='flex items-center'>
