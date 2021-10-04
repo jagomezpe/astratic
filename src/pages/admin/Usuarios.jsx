@@ -55,8 +55,8 @@ const Usuarios = () => {
     
     return (
         <div className='flex flex-col'>
-            <h2 className='text-center text-5xl font-bold text-white mt-12'>Gestión de Usuarios</h2>
-            <div className='flex justify-center mt-7 mb-5'>
+            <h2 className='text-center text-4xl font-bold text-white mt-14'>Administración de Usuarios</h2>
+            <div className='flex justify-center mt-10 mb-7'>
                 <button onClick={()=>{setMostrarTabla(!mostrarTabla)}}
                 className='flex justify-center bg-gray-900 p-2 text-blue-500 rounded-full border border-blue-500 hover:bg-blue-200 hover:text-blue-700 font-semibold text-base w-1/6'>
                     {textoBoton}

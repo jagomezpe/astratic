@@ -2,9 +2,9 @@ import React from 'react'
 
 const Productos = () => {
     return (
-        <form action="">
-
-        </form>
+        <div>
+            Administración de Productos
+        </div>
     )
 }
 
