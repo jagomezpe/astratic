@@ -133,14 +133,8 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
 
     return (
         <div>
-            <div className='text-gray-700 text-center'>
-                ----------------------------------------------------------------------------------------------------------------------------------------------------
-            </div>
-            <h3 className='text-center text-2xl font-semibold text-white'>Añadir Nuevo Usuario</h3>
-            <div className='text-gray-700 text-center'>
-                ----------------------------------------------------------------------------------------------------------------------------------------------------
-            </div>
-            <form ref={form} onSubmit={submitForm} className='grid grid-cols-2 items-center mx-72 mt-6'>
+            <h3 className='text-center text-2xl font-semibold text-white mt-3 mb-8'>Añadir Nuevo Usuario</h3>
+            <form ref={form} onSubmit={submitForm} className='grid grid-cols-2 items-center mx-72 mt-8'>
                 <label htmlFor="IDUsuario" className="mr-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>ID del Usuario</h6>
                     <input type="text" name="IDUsuario"
