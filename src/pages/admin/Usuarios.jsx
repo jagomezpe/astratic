@@ -1,7 +1,8 @@
 import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef} from 'react'
-import { ToastContainer, toast, Slide } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast, Slide } from 'react-toastify'
+import { Dialog, Tooltip } from '@material-ui/core'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Usuarios = () => {
     const [mostrarTabla, setMostrarTabla] = useState(true)
@@ -73,13 +74,25 @@ const Usuarios = () => {
 }
 
 const TablaUsuarios = ({listaUsuarios}) => {
-    const form = useRef(null)
+    const [busqueda, setBusqueda] = useState('')
+    const [usuariosFiltrados, setUsuariosFlitrados] = useState(listaUsuarios)
+
+    useEffect(() => {
+        setUsuariosFlitrados (
+        listaUsuarios.filter((elemento) => {
+            return JSON.stringify(elemento).toLowerCase().includes(busqueda.toLowerCase())
+        })
+        )    
+    }, [busqueda, listaUsuarios])
+
     useEffect(()=> {
     }, [listaUsuarios])
 
     return (
         <div className='flex flex-col items-center justify-center'>
             <h3 className='text-center text-2xl font-semibold text-white mt-3 mb-8'>Lista de Usuarios</h3>
+            <input value={busqueda} onChange={e=> setBusqueda(e.target.value)} placeholder="Buscar"
+            className='bg-gray-700 px-4 py-2 rounded-full w-1/4 focus:outline-none focus:bg-white mb-9 hover:bg-gray-600'/>
             <div className="container flex justify-center">
                 <form className='w-full flex justify-center'>
                     <table className='tabla w-11/12'>
@@ -97,7 +110,7 @@ const TablaUsuarios = ({listaUsuarios}) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {listaUsuarios.map((usuario)=> {
+                            {usuariosFiltrados.map((usuario)=> {
                                 return (
                                     <FilaUsuario key={nanoid()} usuario={usuario}/>
                                 )
@@ -112,20 +125,25 @@ const TablaUsuarios = ({listaUsuarios}) => {
 
 const FilaUsuario = ({ usuario }) => {
     const [edit, setEdit] = useState(false)
+    const [openDialog, setOpenDialog] = useState(false)
     const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
-        IDUsuario:usuario.IDUsuario,
-        documentoIdentidad:usuario.documentoIdentidad,
-        nombre:usuario.nombre,
-        apellidos:usuario.apellidos,
-        numeroCelular:usuario.numeroCelular,
-        correoElectronico:usuario.correoElectronico,
-        rol:usuario.rol,
-        estado:usuario.estado,
+        IDUsuario: usuario.IDUsuario,
+        documentoIdentidad: usuario.documentoIdentidad,
+        nombre: usuario.nombre,
+        apellidos: usuario.apellidos,
+        numeroCelular: usuario.numeroCelular,
+        correoElectronico: usuario.correoElectronico,
+        rol: usuario.rol,
+        estado: usuario.estado,
     })
 
     const actualizarUsuario = () => {
         // Enviar info al backend
     }
+    const eliminarUsuario = () => {
+        // Eliminar usuario del frontend
+    }
+
     return (
         <tr className='text-center'>
             {edit ?
@@ -159,11 +177,37 @@ const FilaUsuario = ({ usuario }) => {
             </> }
             <td>
                 <div className='flex w-full justify-around'>
-                    {edit ? <i onClick={()=> actualizarUsuario()} className="fas fa-check-circle hover:text-green-400"/> :
-                    <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
+                    {edit ?
+                    <>
+                    <Tooltip title='Confirmar cambios' arrow placement='top'>
+                            <i onClick={()=> actualizarUsuario()} className="fas fa-check-circle hover:text-green-400"/>
+                        </Tooltip>
+                        <Tooltip title='Cancelar cambios' arrow placement='top'>
+                            <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
+                        </Tooltip>
+                    </>
+                    :
+                    <>
+                        <Tooltip title='Editar Usuario' arrow placement='top'>
+                            <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
+                        </Tooltip>
+                        <Tooltip title='Eliminar Usuario' arrow placement='top'> 
+                            <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
+                        </Tooltip>  
+                    </>               
                     }
-                    <i className="fas fa-trash-alt hover:text-red-500"/>
                 </div>
+                <Dialog open={openDialog}>
+                    <div className='flex flex-col p-8'>
+                        <h2 className='text-center text-gray-900 font-semibold text-2xl'>¿Está seguro de eliminar el usuario?</h2>
+                        <div className='flex justify-around mt-6'>
+                            <button onClick={()=> eliminarUsuario()}
+                            className='px-4 py-2 bg-blue-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-blue-600'>Aceptar</button>
+                            <button onClick={()=> setOpenDialog(false)}
+                            className='px-4 py-2 bg-red-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-red-600'>Cancelar</button>
+                        </div>
+                    </div>
+                </Dialog>
             </td>
         </tr>
     )
