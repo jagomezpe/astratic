@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef} from 'react'
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,7 +23,7 @@ const Usuarios = () => {
             IDUsuario: "456DEF",
             documentoIdentidad: "1077111654",
             nombre: "Patricia Ana",
-            apellidos: "Tugillo",
+            apellidos: "Tufillo",
             numeroCelular: 3117772222,
             correoElectronico: "patana@email.com",
             rol: "No Asignado",
@@ -72,45 +73,99 @@ const Usuarios = () => {
 }
 
 const TablaUsuarios = ({listaUsuarios}) => {
+    const form = useRef(null)
     useEffect(()=> {
-        console.log(listaUsuarios)
     }, [listaUsuarios])
+
     return (
         <div className='flex flex-col items-center justify-center'>
             <h3 className='text-center text-2xl font-semibold text-white mt-3 mb-8'>Lista de Usuarios</h3>
             <div className="container flex justify-center">
-                <table className='w-11/12'>
-                    <thead>
-                        <tr className='text-center'>
-                            <th className='border-t border-b border-blue-500 px-4 py-2 text-blue-500'>ID Usuario</th>
-                            <th className='border-t border-b border-blue-500 px-4 py-2 text-blue-500'>Documento</th>
-                            <th className='border-t border-b border-blue-500 px-4 py-2 text-blue-500'>Nombre</th>
-                            <th className='border-t border-b border-blue-500 px-4 py-2 text-blue-500'>Apellidos</th>
-                            <th className='border-t border-b border-blue-500 px-4 py-2 text-blue-500'>Número Celular</th>
-                            <th className='border-t border-b border-blue-500 px-4 py-2 text-blue-500'>Correo Electónico</th>
-                            <th className='border-t border-b border-blue-500 px-4 py-2 text-blue-500'>Rol</th>
-                            <th className='border-t border-b border-blue-500 px-4 py-2 text-blue-500'>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {listaUsuarios.map((usuario)=> {
-                            return (
-                                <tr className='text-center'>
-                                    <td className='border-b-2 border-gray-700 px-4 py-2 text-white'>{usuario.IDUsuario}</td>
-                                    <td className='border-b-2 border-gray-700 px-4 py-2 text-white'>{usuario.documentoIdentidad}</td>
-                                    <td className='border-b-2 border-gray-700 px-4 py-2 text-white'>{usuario.nombre}</td>
-                                    <td className='border-b-2 border-gray-700 px-4 py-2 text-white'>{usuario.apellidos}</td>
-                                    <td className='border-b-2 border-gray-700 px-4 py-2 text-white'>{usuario.numeroCelular}</td>
-                                    <td className='border-b-2 border-gray-700 px-4 py-2 text-white'>{usuario.correoElectronico}</td>
-                                    <td className='border-b-2 border-gray-700 px-4 py-2 text-white'>{usuario.rol}</td>
-                                    <td className='border-b-2 border-gray-700 px-4 py-2 text-white'>{usuario.estado}</td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
+                <form className='w-full flex justify-center'>
+                    <table className='tabla w-11/12'>
+                        <thead>
+                            <tr className='text-center'>
+                                <th>ID Usuario</th>
+                                <th>Documento</th>
+                                <th>Nombre</th>
+                                <th>Apellidos</th>
+                                <th>Número Celular</th>
+                                <th>Correo Electónico</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {listaUsuarios.map((usuario)=> {
+                                return (
+                                    <FilaUsuario key={nanoid()} usuario={usuario}/>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </form>
             </div>  
         </div>
+    )
+}
+
+const FilaUsuario = ({ usuario }) => {
+    const [edit, setEdit] = useState(false)
+    const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
+        IDUsuario:usuario.IDUsuario,
+        documentoIdentidad:usuario.documentoIdentidad,
+        nombre:usuario.nombre,
+        apellidos:usuario.apellidos,
+        numeroCelular:usuario.numeroCelular,
+        correoElectronico:usuario.correoElectronico,
+        rol:usuario.rol,
+        estado:usuario.estado,
+    })
+
+    const actualizarUsuario = () => {
+        // Enviar info al backend
+    }
+    return (
+        <tr className='text-center'>
+            {edit ?
+                <>
+                    <td><input type="text" value={infoNuevoUsuario.IDUsuario} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, IDUsuario:e.target.value})}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td><input type="text" value={infoNuevoUsuario.documentoIdentidad} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, documentoIdentidad:e.target.value})}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td><input type="text" value={infoNuevoUsuario.nombre} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, nombre:e.target.value})}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td><input type="text" value={infoNuevoUsuario.apellidos} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, apellidos:e.target.value})}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td><input type="tel" value={infoNuevoUsuario.numeroCelular} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, numeroCelular:e.target.value})}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td><input type="email" value={infoNuevoUsuario.correoElectronico} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, correoElectronico:e.target.value})}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td><input type="text" value={infoNuevoUsuario.rol} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, rol:e.target.value})}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td><input type="text" value={infoNuevoUsuario.estado} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, estado:e.target.value})}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                </>    
+            : <>
+            <td>{usuario.IDUsuario}</td>
+            <td>{usuario.documentoIdentidad}</td>
+            <td>{usuario.nombre}</td>
+            <td>{usuario.apellidos}</td>
+            <td>{usuario.numeroCelular}</td>
+            <td>{usuario.correoElectronico}</td>
+            <td>{usuario.rol}</td>
+            <td>{usuario.estado}</td>
+            </> }
+            <td>
+                <div className='flex w-full justify-around'>
+                    {edit ? <i onClick={()=> actualizarUsuario()} className="fas fa-check-circle hover:text-green-400"/> :
+                    <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
+                    }
+                    <i className="fas fa-trash-alt hover:text-red-500"/>
+                </div>
+            </td>
+        </tr>
     )
 }
 
