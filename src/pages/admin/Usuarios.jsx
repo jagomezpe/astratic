@@ -85,14 +85,15 @@ const TablaUsuarios = ({listaUsuarios}) => {
         )    
     }, [busqueda, listaUsuarios])
 
-    useEffect(()=> {
-    }, [listaUsuarios])
-
     return (
         <div className='flex flex-col items-center justify-center'>
             <h3 className='text-center text-2xl font-semibold text-white mt-3 mb-8'>Lista de Usuarios</h3>
-            <input value={busqueda} onChange={e=> setBusqueda(e.target.value)} placeholder="Buscar"
-            className='bg-gray-700 px-4 py-2 rounded-full w-1/4 focus:outline-none focus:bg-white mb-9 hover:bg-gray-600'/>
+            <div className='flex justify-between items-center bg-gray-700 px-4 py-2 rounded-full w-1/4 focus:outline-none focus:bg-white mb-9 hover:bg-gray-600'>
+                <input value={busqueda} onChange={e=> setBusqueda(e.target.value)}
+                placeholder="Buscar"
+                className='focus:outline-none bg-transparent text-white w-full'/>
+                <i className='fas fa-search text-gray-400'></i>
+            </div>
             <div className="container flex justify-center">
                 <form className='w-full flex justify-center'>
                     <table className='tabla w-11/12'>
@@ -160,10 +161,22 @@ const FilaUsuario = ({ usuario }) => {
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
                     <td><input type="email" value={infoNuevoUsuario.correoElectronico} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, correoElectronico:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
-                    <td><input type="text" value={infoNuevoUsuario.rol} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, rol:e.target.value})}
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
-                    <td><input type="text" value={infoNuevoUsuario.estado} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, estado:e.target.value})}
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td>
+                        <select value={infoNuevoUsuario.rol} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, rol:e.target.value})}
+                        className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'>
+                            <option>Administrador</option>
+                            <option>Vendedor</option>
+                            <option>No Asignado</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select value={infoNuevoUsuario.rol} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, rol:e.target.value})}
+                        className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'>
+                            <option>AUTORIZADO</option>
+                            <option>NO AUTORIZADO</option>
+                            <option>PENDIENTE</option>
+                        </select>
+                    </td>
                 </>    
             : <>
             <td>{usuario.IDUsuario}</td>
