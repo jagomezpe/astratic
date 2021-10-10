@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef} from 'react'
 import { ToastContainer, toast, Slide } from 'react-toastify'
+import axios from "axios"
 import { Dialog, Tooltip } from '@material-ui/core'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -9,43 +10,20 @@ const Usuarios = () => {
     const [usuarios, setUsuarios] = useState([])
     const [textoBoton, setTextoBoton] = useState("Añadir Nuevo Usuario")
 
-    const usuariosBackend = [
-        {
-            IDUsuario: "123ABC",
-            documentoIdentidad: "1088000789",
-            nombre: "Amapola",
-            apellidos: "Polar",
-            numeroCelular: 3218885555,
-            correoElectronico: "amapolar@email.com",
-            rol: "Vendedor",
-            estado: "AUTORIZADO"
-        },
-        {
-            IDUsuario: "456DEF",
-            documentoIdentidad: "1077111654",
-            nombre: "Patricia Ana",
-            apellidos: "Tufillo",
-            numeroCelular: 3117772222,
-            correoElectronico: "patana@email.com",
-            rol: "No Asignado",
-            estado: "PENDIENTE"
-        },
-        {
-            IDUsuario: "789GHI",
-            documentoIdentidad: "1099555123",
-            nombre: "Ébano",
-            apellidos: "Banquete",
-            numeroCelular: 3187774444,
-            correoElectronico: "ebaquete@email.com",
-            rol: "Administrador",
-            estado: "AUTORIZADO"
-        }
-    ]
-
     useEffect(()=> {
-        // Obtener listas de usuarios desde el backend
-        setUsuarios(usuariosBackend)
-    },[])
+        const obtenerUsuarios = async () => {
+            const options = {method: 'GET', url: 'http://localhost:5000/usuarios'};
+    
+            await axios.request(options).then(function (response) {
+                setUsuarios(response.data)
+            }).catch(function (error) {
+                console.error(error)
+            })
+        }
+        if(mostrarTabla) {
+            obtenerUsuarios()
+        }
+    }, [mostrarTabla])
 
     useEffect (()=>{
         if (mostrarTabla) {
@@ -229,7 +207,7 @@ const FilaUsuario = ({ usuario }) => {
 const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}) => {
     const form = useRef(null)
 
-    const submitForm = (e) => {
+    const submitForm = async (e) => {
         e.preventDefault()
         const formData = new FormData(form.current)
 
@@ -238,9 +216,31 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
             nuevoUsuario[key] = value
         })
 
+        const options = {
+            method: 'POST',
+            url: 'http://localhost:5000/usuarios/nuevo',
+            headers: {'Content-Type': 'application/json'},
+            data: {
+              IDUsuario: nuevoUsuario.IDUsuario,
+              documentoIdentidad: nuevoUsuario.documentoIdentidad,
+              nombre: nuevoUsuario.nombre,
+              apellidos: nuevoUsuario.apellidos,
+              numeroCelular: nuevoUsuario.numeroCelular,
+              correoElectronico: nuevoUsuario.correoElectronico,
+              rol: nuevoUsuario.rol,
+              estado: nuevoUsuario.estado
+            }
+          }
+
+        await axios.request(options).then(function (response) {
+            console.log(response.data)
+            toast.success("Usuario agregado con éxito", {theme:"colored", transition: Slide})
+          }).catch(function (error) {
+            console.error(error)
+            toast.error("Error creando el usuario", {theme:"colored", transition: Slide})
+          })
+
         setMostrarTabla(true)
-        toast.success("Usuario agregado con éxito", {theme:"colored", transition: Slide})
-        setUsuarios([...listaUsuarios, nuevoUsuario])
     }
 
     return (
