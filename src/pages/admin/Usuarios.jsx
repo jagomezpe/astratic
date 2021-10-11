@@ -9,8 +9,9 @@ const Usuarios = () => {
     const [mostrarTabla, setMostrarTabla] = useState(true)
     const [usuarios, setUsuarios] = useState([])
     const [textoBoton, setTextoBoton] = useState("Añadir Nuevo Usuario")
+    const [ejecutarConsulta, setEjecutarConsulta] = useState(true)
 
-    useEffect(()=> {
+    useEffect(() => {
         const obtenerUsuarios = async () => {
             const options = {method: 'GET', url: 'http://localhost:5000/usuarios'};
     
@@ -20,8 +21,15 @@ const Usuarios = () => {
                 console.error(error)
             })
         }
-        if(mostrarTabla) {
+        if(ejecutarConsulta) {
             obtenerUsuarios()
+            setEjecutarConsulta(false)
+        }
+    }, [ejecutarConsulta])
+
+    useEffect(()=> {
+        if(mostrarTabla) {
+            setEjecutarConsulta(true)
         }
     }, [mostrarTabla])
 
@@ -42,7 +50,7 @@ const Usuarios = () => {
                     {textoBoton}
                 </button>
             </div>
-            {mostrarTabla ? <TablaUsuarios listaUsuarios={usuarios}/> : 
+            {mostrarTabla ? <TablaUsuarios listaUsuarios={usuarios} setEjecutarConsulta={setEjecutarConsulta}/> : 
             <FormularioCreacionUsuario setMostrarTabla = {setMostrarTabla} listaUsuarios = {usuarios} setUsuarios= {setUsuarios}/>}
             <ToastContainer
             position="bottom-center"
@@ -51,7 +59,7 @@ const Usuarios = () => {
     )
 }
 
-const TablaUsuarios = ({listaUsuarios}) => {
+const TablaUsuarios = ({listaUsuarios, setEjecutarConsulta}) => {
     const [busqueda, setBusqueda] = useState('')
     const [usuariosFiltrados, setUsuariosFlitrados] = useState(listaUsuarios)
 
@@ -77,7 +85,7 @@ const TablaUsuarios = ({listaUsuarios}) => {
                     <table className='tabla w-11/12'>
                         <thead>
                             <tr className='text-center'>
-                                <th>ID Usuario</th>
+                                <th>ID</th>
                                 <th>Documento</th>
                                 <th>Nombre</th>
                                 <th>Apellidos</th>
@@ -91,7 +99,7 @@ const TablaUsuarios = ({listaUsuarios}) => {
                         <tbody>
                             {usuariosFiltrados.map((usuario)=> {
                                 return (
-                                    <FilaUsuario key={nanoid()} usuario={usuario}/>
+                                    <FilaUsuario key={nanoid()} usuario={usuario} setEjecutarConsulta={setEjecutarConsulta}/>
                                 )
                             })}
                         </tbody>
@@ -102,11 +110,11 @@ const TablaUsuarios = ({listaUsuarios}) => {
     )
 }
 
-const FilaUsuario = ({ usuario }) => {
+const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     const [edit, setEdit] = useState(false)
     const [openDialog, setOpenDialog] = useState(false)
     const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
-        IDUsuario: usuario.IDUsuario,
+        _id: usuario._id,
         documentoIdentidad: usuario.documentoIdentidad,
         nombre: usuario.nombre,
         apellidos: usuario.apellidos,
@@ -116,19 +124,50 @@ const FilaUsuario = ({ usuario }) => {
         estado: usuario.estado,
     })
 
-    const actualizarUsuario = () => {
-        // Enviar info al backend
+    const actualizarUsuario = async () => {
+        const options = {
+            method: 'PATCH',
+            url: 'http://localhost:5000/usuarios/editar',
+            headers: {'Content-Type': 'application/json'},
+            data: {...infoNuevoUsuario, id: usuario._id}
+          };
+          
+          await axios.request(options).then(function (response) {
+            console.log(response.data);
+            toast.success("Usuario modificado con éxito", {theme:"colored", transition: Slide})
+            setEdit(false)
+            setEjecutarConsulta(true)
+          }).catch(function (error) {
+            console.error(error);
+            toast.error("Error modificando el usuario", {theme:"colored", transition: Slide})
+          });
     }
-    const eliminarUsuario = () => {
-        // Eliminar usuario del frontend
+    const eliminarUsuario = async () => {
+        const options = {
+            method: 'DELETE',
+            url: 'http://localhost:5000/usuarios/eliminar',
+            headers: {'Content-Type': 'application/json'},
+            data: {id: usuario._id}
+          };
+          
+          await axios.request(options).then(function (response) {
+            console.log(response.data);
+            toast.success("Usuario eliminado con éxito", {theme:"colored", transition: Slide})
+            setEjecutarConsulta(true)
+          }).catch(function (error) {
+            console.error(error);
+            toast.error("Error eliminando el usuario", {theme:"colored", transition: Slide})
+          });
+        setOpenDialog(false)
     }
 
     return (
         <tr className='text-center'>
             {edit ?
                 <>
-                    <td><input type="text" value={infoNuevoUsuario.IDUsuario} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, IDUsuario:e.target.value})}
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
+                    <td className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold min-w-full py-1'>
+                        {infoNuevoUsuario._id.slice(19)}
+                    </td>
                     <td><input type="text" value={infoNuevoUsuario.documentoIdentidad} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, documentoIdentidad:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
                     <td><input type="text" value={infoNuevoUsuario.nombre} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, nombre:e.target.value})}
@@ -141,15 +180,17 @@ const FilaUsuario = ({ usuario }) => {
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
                     <td>
                         <select value={infoNuevoUsuario.rol} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, rol:e.target.value})}
-                        className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'>
+                        className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'
+                        defaultValue={0}>
                             <option>Administrador</option>
                             <option>Vendedor</option>
                             <option>No Asignado</option>
                         </select>
                     </td>
                     <td>
-                        <select value={infoNuevoUsuario.rol} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, rol:e.target.value})}
-                        className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'>
+                        <select value={infoNuevoUsuario.estado} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, estado:e.target.value})}
+                        className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'
+                        defaultValue={0}>
                             <option>AUTORIZADO</option>
                             <option>NO AUTORIZADO</option>
                             <option>PENDIENTE</option>
@@ -157,7 +198,7 @@ const FilaUsuario = ({ usuario }) => {
                     </td>
                 </>    
             : <>
-            <td>{usuario.IDUsuario}</td>
+            <td>{usuario._id.slice(19)}</td>
             <td>{usuario.documentoIdentidad}</td>
             <td>{usuario.nombre}</td>
             <td>{usuario.apellidos}</td>
@@ -170,7 +211,7 @@ const FilaUsuario = ({ usuario }) => {
                 <div className='flex w-full justify-around'>
                     {edit ?
                     <>
-                    <Tooltip title='Confirmar cambios' arrow placement='top'>
+                        <Tooltip title='Confirmar cambios' arrow placement='top'>
                             <i onClick={()=> actualizarUsuario()} className="fas fa-check-circle hover:text-green-400"/>
                         </Tooltip>
                         <Tooltip title='Cancelar cambios' arrow placement='top'>
@@ -221,7 +262,6 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
             url: 'http://localhost:5000/usuarios/nuevo',
             headers: {'Content-Type': 'application/json'},
             data: {
-              IDUsuario: nuevoUsuario.IDUsuario,
               documentoIdentidad: nuevoUsuario.documentoIdentidad,
               nombre: nuevoUsuario.nombre,
               apellidos: nuevoUsuario.apellidos,
@@ -247,43 +287,37 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
         <div>
             <h3 className='text-center text-2xl font-semibold text-white mt-3 mb-8'>Añadir Nuevo Usuario</h3>
             <form ref={form} onSubmit={submitForm} className='grid grid-cols-2 items-center mx-72 mt-8'>
-                <label htmlFor="IDUsuario" className="mr-8 mb-4">
-                    <h6 className='text-gray-200 font-semibold text-xs'>ID del Usuario</h6>
-                    <input type="text" name="IDUsuario"
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
-                    required/>
-                </label>
-                <label htmlFor="documentoIdentidad" className="ml-8 mb-4">
+                <label htmlFor="documentoIdentidad" className="mr-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Documento de Identidad</h6>
                     <input type="text" name="documentoIdentidad"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="nombre" className="mr-8 mb-4">
+                <label htmlFor="nombre" className="ml-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Nombre</h6>
                     <input type="text" name="nombre"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="apellidos" className="ml-8 mb-4">
+                <label htmlFor="apellidos" className="mr-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Apellidos</h6>
                     <input type="text" name="apellidos"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="numeroCelular" className="mr-8 mb-4">
+                <label htmlFor="numeroCelular" className="ml-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Número Celular</h6>
                     <input type="tel" name="numeroCelular"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="correoElectronico" className="ml-8 mb-4">
+                <label htmlFor="correoElectronico" className="mr-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Correo Electrónico</h6>
                     <input type="email" name="correoElectronico"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="rol" className="mr-8 mb-4">
+                <label htmlFor="rol" className="ml-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Rol</h6>
                     <select name="rol"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
@@ -294,7 +328,7 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
                         <option>No Asignado</option>
                     </select>
                 </label>
-                <label htmlFor="estado" className="ml-8 mb-4">
+                <label htmlFor="estado" className="mr-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Estado</h6>
                     <select name="estado"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
