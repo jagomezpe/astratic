@@ -13,7 +13,7 @@ const Usuarios = () => {
 
     useEffect(() => {
         const obtenerUsuarios = async () => {
-            const options = {method: 'GET', url: 'http://localhost:5000/usuarios'};
+            const options = {method: 'GET', url: 'http://localhost:5050/usuarios'};
     
             await axios.request(options).then(function (response) {
                 setUsuarios(response.data)
@@ -114,7 +114,6 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     const [edit, setEdit] = useState(false)
     const [openDialog, setOpenDialog] = useState(false)
     const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
-        _id: usuario._id,
         documentoIdentidad: usuario.documentoIdentidad,
         nombre: usuario.nombre,
         apellidos: usuario.apellidos,
@@ -127,7 +126,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     const actualizarUsuario = async () => {
         const options = {
             method: 'PATCH',
-            url: 'http://localhost:5000/usuarios/editar',
+            url: 'http://localhost:5050/usuarios/editar',
             headers: {'Content-Type': 'application/json'},
             data: {...infoNuevoUsuario, id: usuario._id}
           };
@@ -145,7 +144,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     const eliminarUsuario = async () => {
         const options = {
             method: 'DELETE',
-            url: 'http://localhost:5000/usuarios/eliminar',
+            url: 'http://localhost:5050/usuarios/eliminar',
             headers: {'Content-Type': 'application/json'},
             data: {id: usuario._id}
           };
@@ -165,8 +164,8 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
         <tr className='text-center'>
             {edit ?
                 <>
-                    <td className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold min-w-full py-1'>
-                        {infoNuevoUsuario._id.slice(19)}
+                    <td className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold bg-transparent min-w-full py-1'>
+                        {infoNuevoUsuario._id}
                     </td>
                     <td><input type="text" value={infoNuevoUsuario.documentoIdentidad} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, documentoIdentidad:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
@@ -197,7 +196,8 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
                         </select>
                     </td>
                 </>    
-            : <>
+            :
+            <>
             <td>{usuario._id.slice(19)}</td>
             <td>{usuario.documentoIdentidad}</td>
             <td>{usuario.nombre}</td>
@@ -259,7 +259,7 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
 
         const options = {
             method: 'POST',
-            url: 'http://localhost:5000/usuarios/nuevo',
+            url: 'http://localhost:5050/usuarios/nuevo',
             headers: {'Content-Type': 'application/json'},
             data: {
               documentoIdentidad: nuevoUsuario.documentoIdentidad,
