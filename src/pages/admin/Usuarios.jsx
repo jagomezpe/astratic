@@ -1,9 +1,9 @@
 import { nanoid } from 'nanoid';
 import React, { useEffect, useState, useRef} from 'react'
 import { ToastContainer, toast, Slide } from 'react-toastify'
-import axios from "axios"
 import { Dialog, Tooltip } from '@material-ui/core'
 import 'react-toastify/dist/ReactToastify.css'
+import { obtenerUsuarios, crearUsuario, editarUsuario, eliminarUsuario } from 'utils/api';
 
 const Usuarios = () => {
     const [mostrarTabla, setMostrarTabla] = useState(true)
@@ -12,17 +12,15 @@ const Usuarios = () => {
     const [ejecutarConsulta, setEjecutarConsulta] = useState(true)
 
     useEffect(() => {
-        const obtenerUsuarios = async () => {
-            const options = {method: 'GET', url: 'http://localhost:5050/usuarios/'};
-    
-            await axios.request(options).then(function (response) {
-                setUsuarios(response.data)
-            }).catch(function (error) {
-                console.error(error)
-            })
-        }
         if(ejecutarConsulta) {
-            obtenerUsuarios()
+            obtenerUsuarios (
+                (response) => {
+                    setUsuarios(response.data)
+                },
+                (error) => {
+                    console.log(error)
+                }
+            )
             setEjecutarConsulta(false)
         }
     }, [ejecutarConsulta])
@@ -114,6 +112,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     const [edit, setEdit] = useState(false)
     const [openDialog, setOpenDialog] = useState(false)
     const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
+        _id: usuario._id,
         documentoIdentidad: usuario.documentoIdentidad,
         nombre: usuario.nombre,
         apellidos: usuario.apellidos,
@@ -124,38 +123,39 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     })
 
     const actualizarUsuario = async () => {
-        const options = {
-            method: 'PATCH',
-            url: `http://localhost:5050/usuarios/${usuario._id}/`,
-            headers: {'Content-Type': 'application/json'},
-            data: {...infoNuevoUsuario}
-          };
-          
-          await axios.request(options).then(function (response) {
-            console.log(response.data);
-            toast.success("Usuario modificado con éxito", {theme:"colored", transition: Slide})
-            setEdit(false)
-            setEjecutarConsulta(true)
-          }).catch(function (error) {
-            console.error(error);
-            toast.error("Error modificando el usuario", {theme:"colored", transition: Slide})
-          });
+        await editarUsuario(usuario._id,
+            {   
+            documentoIdentidad: infoNuevoUsuario.documentoIdentidad,
+            nombre: infoNuevoUsuario.nombre,
+            apellidos: infoNuevoUsuario.apellidos,
+            numeroCelular: infoNuevoUsuario.numeroCelular,
+            correoElectronico: infoNuevoUsuario.correoElectronico,
+            rol: infoNuevoUsuario.rol,
+            estado: infoNuevoUsuario.estado,
+            },
+            (response) => {
+                console.log(response.data);
+                toast.success("Usuario modificado con éxito", {theme:"colored", transition: Slide})
+                setEdit(false)
+                setEjecutarConsulta(true)
+            },
+            (error) => {
+                console.error(error);
+                toast.error("Error modificando el usuario", {theme:"colored", transition: Slide})
+            })
     }
-    const eliminarUsuario = async () => {
-        const options = {
-            method: 'DELETE',
-            url: `http://localhost:5050/usuarios/${usuario._id}/`,
-            headers: {'Content-Type': 'application/json'}
-          };
-          
-          await axios.request(options).then(function (response) {
-            console.log(response.data);
-            toast.success("Usuario eliminado con éxito", {theme:"colored", transition: Slide})
-            setEjecutarConsulta(true)
-          }).catch(function (error) {
-            console.error(error);
-            toast.error("Error eliminando el usuario", {theme:"colored", transition: Slide})
-          });
+    const deleteUser = async () => {
+        await eliminarUsuario(usuario._id,
+            (response) => {
+                console.log(response.data);
+                toast.success("Usuario eliminado con éxito", {theme:"colored", transition: Slide})
+                setEjecutarConsulta(true)
+            },
+            (error) => {
+                console.error(error);
+                toast.error("Error eliminando el usuario", {theme:"colored", transition: Slide})
+            }
+        )
         setOpenDialog(false)
     }
 
@@ -232,7 +232,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
                     <div className='flex flex-col p-8'>
                         <h2 className='text-center text-gray-900 font-semibold text-2xl'>¿Está seguro de eliminar el usuario?</h2>
                         <div className='flex justify-around mt-6'>
-                            <button onClick={()=> eliminarUsuario()}
+                            <button onClick={()=> deleteUser()}
                             className='px-4 py-2 bg-blue-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-blue-600'>Aceptar</button>
                             <button onClick={()=> setOpenDialog(false)}
                             className='px-4 py-2 bg-red-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-red-600'>Cancelar</button>
@@ -256,29 +256,22 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
             nuevoUsuario[key] = value
         })
 
-        const options = {
-            method: 'POST',
-            url: 'http://localhost:5050/usuarios/',
-            headers: {'Content-Type': 'application/json'},
-            data: {
-              documentoIdentidad: nuevoUsuario.documentoIdentidad,
-              nombre: nuevoUsuario.nombre,
-              apellidos: nuevoUsuario.apellidos,
-              numeroCelular: nuevoUsuario.numeroCelular,
-              correoElectronico: nuevoUsuario.correoElectronico,
-              rol: nuevoUsuario.rol,
-              estado: nuevoUsuario.estado
-            }
-          }
-
-        await axios.request(options).then(function (response) {
+        await crearUsuario({
+            documentoIdentidad: nuevoUsuario.documentoIdentidad,
+            nombre: nuevoUsuario.nombre,
+            apellidos: nuevoUsuario.apellidos,
+            numeroCelular: nuevoUsuario.numeroCelular,
+            correoElectronico: nuevoUsuario.correoElectronico,
+            rol: nuevoUsuario.rol,
+            estado: nuevoUsuario.estado
+        }, (response) => {
             console.log(response.data)
             toast.success("Usuario agregado con éxito", {theme:"colored", transition: Slide})
-          }).catch(function (error) {
+        },
+        (error) => {
             console.error(error)
             toast.error("Error creando el usuario", {theme:"colored", transition: Slide})
-          })
-
+        })
         setMostrarTabla(true)
     }
 
