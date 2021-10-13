@@ -13,7 +13,7 @@ const Usuarios = () => {
 
     useEffect(() => {
         const obtenerUsuarios = async () => {
-            const options = {method: 'GET', url: 'http://localhost:5050/usuarios'};
+            const options = {method: 'GET', url: 'http://localhost:5050/usuarios/'};
     
             await axios.request(options).then(function (response) {
                 setUsuarios(response.data)
@@ -126,9 +126,9 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     const actualizarUsuario = async () => {
         const options = {
             method: 'PATCH',
-            url: 'http://localhost:5050/usuarios/editar',
+            url: `http://localhost:5050/usuarios/${usuario._id}/`,
             headers: {'Content-Type': 'application/json'},
-            data: {...infoNuevoUsuario, id: usuario._id}
+            data: {...infoNuevoUsuario}
           };
           
           await axios.request(options).then(function (response) {
@@ -144,9 +144,8 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     const eliminarUsuario = async () => {
         const options = {
             method: 'DELETE',
-            url: 'http://localhost:5050/usuarios/eliminar',
-            headers: {'Content-Type': 'application/json'},
-            data: {id: usuario._id}
+            url: `http://localhost:5050/usuarios/${usuario._id}/`,
+            headers: {'Content-Type': 'application/json'}
           };
           
           await axios.request(options).then(function (response) {
@@ -259,7 +258,7 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
 
         const options = {
             method: 'POST',
-            url: 'http://localhost:5050/usuarios/nuevo',
+            url: 'http://localhost:5050/usuarios/',
             headers: {'Content-Type': 'application/json'},
             data: {
               documentoIdentidad: nuevoUsuario.documentoIdentidad,
