@@ -6,7 +6,7 @@ const Ventas = () => {
     const form = useRef(null)
     const [vendedores, setVendedores] = useState([])
     const [productos, setProductos] = useState([])
-    const [productosSeleccionados, setProductosSeleccionados] = useState([])
+    const [productosTabla, setProductosTabla] = useState([])
 
     useEffect(() => {
         const fetchVendedores = async () => {
@@ -35,14 +35,6 @@ const Ventas = () => {
         fetchProductos()
     }, [])
 
-    useEffect(() => {
-        console.log("Productos seleccionados: ", productosSeleccionados)
-    }, [productosSeleccionados])
-
-    const agregarNuevoProducto = () => {
-        setProductosSeleccionados([...productosSeleccionados, DropDownProductos])
-    }
-
     const submitForm = async (e) => {
         e.preventDefault()
         const formData = new FormData(form.current)
@@ -54,19 +46,35 @@ const Ventas = () => {
 
         console.log("form data: ", nuevaVenta)
 
-        /* const infoConsolidada = {
-            valor: nuevaVenta.valor,
-            vendedor: vendedores.filter(v => v._id === nuevaVenta.vendedor)[0],
-            producto: productos.filter(p => p._id === nuevaVenta.producto)[0]
+        const listaProductos = Object.keys(nuevaVenta).map((k) => {
+            if(k.includes('producto')) {
+                return productosTabla.filter((p) => p._id === nuevaVenta[k])[0]
+            }
+            return null
+        }).filter((p) => p)
+
+        Object.keys(nuevaVenta).forEach((k) => {
+            if(k.includes('cantidad')) {
+                const indice = parseInt(k.split('_')[1])
+                listaProductos[indice]['cantidad'] = nuevaVenta[k]
+            }
+        })
+
+        const datosVenta = {
+            vendedor: vendedores.filter((v) => v._id === nuevaVenta.vendedor)[0],
+            cantidad: nuevaVenta.valor,
+            productos: listaProductos,
         }
 
-        await crearVenta(infoConsolidada,
+        console.log(listaProductos)
+
+        await crearVenta(datosVenta,
             (response) => {
                 console.log(response)
             },
             (error) => {
                 console.error(error)
-            }) */
+        })
     }
 
     return (
@@ -77,33 +85,16 @@ const Ventas = () => {
                     <span className='text-gray-200 font-semibold text-xs flex flex-col'>Vendedor</span>
                     <select name="vendedor"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
-                    defaultValue={0}>
-                        <option disabled value={0}>Seleccione un vendedor</option>
+                    defaultValue="" required>
+                        <option disabled value="">Seleccione un vendedor</option>
                         {vendedores.map((el) => {
                             return <option key={nanoid()} value={el._id}>{`${el.nombre} ${el.apellidos}`}</option>
                         })}
                     </select>
                 </label>
-                <div className='col-span-2'>
-                    <span className='text-gray-200 font-semibold text-xs flex flex-col'>Selección de productos</span>
-                    <button onClick={() => agregarNuevoProducto()}
-                    className='flex justify-center bg-gray-900 p-2 text-blue-500 rounded-full border border-blue-500 hover:bg-blue-200 hover:text-blue-700 font-semibold text-base w-max'>
-                        Agregar nuevo producto
-                    </button>
-                </div>
-                
-                {productosSeleccionados.map((DropDownProductos, index) => {
-                    return (
-                        <div className='flex'>
-                            <DropDownProductos key={nanoid()} productos={productos} nombre={`producto_${index}`}/>
-                            <button className='text-blue-500'>
-                                Eliminar
-                            </button>
-                        </div>
-                    )
-                })
-                }
 
+                <TablaProductos productos={productos} setProductos={setProductos} setProductosTabla={setProductosTabla}/>
+                
                 <label htmlFor="venta">
                     <span className='text-gray-200 font-semibold text-xs flex flex-col'>Valor total venta</span>
                     <input type="number" name="valor"
@@ -120,19 +111,87 @@ const Ventas = () => {
     )
 }
 
-const DropDownProductos = ({ productos, nombre }) => {
+const TablaProductos =  ({productos, setProductos, setProductosTabla}) => {
+    const [productoAAgregar, setProductoAAgregar] = useState({})
+    const [filasTabla, setFilasTabla] = useState([])
+
+    useEffect(() => {
+        console.log(productoAAgregar)
+    }, [productoAAgregar])
+
+    useEffect(() => {
+        console.log("filasTabla ", filasTabla)
+        setProductosTabla(filasTabla)
+    }, [filasTabla, setProductosTabla])
+
+    const agregarNuevoProducto = () => {
+        setFilasTabla([...filasTabla, productoAAgregar])
+        setProductos(productos.filter((p) => p._id !== productoAAgregar._id))
+        setProductoAAgregar({})
+    }
+
+    const eliminarProducto = (productoAEliminar) => {
+        setFilasTabla(filasTabla.filter((p) => p._id !== productoAEliminar._id))
+        setProductos([...productos, productoAEliminar])
+    }
+
     return (
-        <label htmlFor="producto">
-            <span className='text-gray-200 font-semibold text-xs flex flex-col'>Producto</span>
-            <select name={nombre}
-            className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
-            defaultValue={0}>
-                <option disabled value={0}>Seleccione un producto</option>
-                {productos.map((el) => {
-                    return <option key={nanoid()} value={el._id}>{el.nombre}</option>
-                })}
-            </select>
-        </label>
+        <div>
+            <div className='flex'>
+                <label htmlFor="producto">
+                    <select className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
+                    value={productoAAgregar._id ?? ""}
+                    onChange={e => setProductoAAgregar(productos.filter((v) => v._id === e.target.value)[0])}>
+                        <option disabled value="">Seleccione un producto</option>
+                        {productos.map((el) => {
+                            return <option key={nanoid()} value={el._id}>{el.nombre}</option>
+                        })}
+                    </select>
+                </label>
+                <button type="button" onClick={() => agregarNuevoProducto()}
+                className='flex justify-center bg-gray-900 p-2 text-blue-500 rounded-full border border-blue-500 hover:bg-blue-200 hover:text-blue-700 font-semibold text-base w-max'>
+                    Agregar Producto
+                </button>
+            </div>
+            <table className='tabla text-center'>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Valor</th>
+                        <th>Estado</th>
+                        <th>Cantidad</th>
+                        <th>Eliminar</th>
+                        <th className='hidden'>Input</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filasTabla.map((el, index) => {
+                        return(
+                            <tr key={nanoid()}>
+                                <td>{el._id.slice(19)}</td>
+                                <td>{el.nombre}</td>
+                                <td>{el.descripcion}</td>
+                                <td>{el.valor}</td>
+                                <td>{el.estado}</td>
+                                <td>
+                                    <label htmlFor={`valor_${index}`}>
+                                        <input type="number" name={`cantidad_${index}`} required
+                                        className='text-black'/>
+                                    </label>
+                                </td>
+                                <td>
+                                    <i onClick={() => eliminarProducto(el)} className="fas fa-trash-alt hover:text-red-500 cursor-pointer"/>
+                                </td>
+                                <input hidden defaultValue={el._id} name={`producto_${index}`} required
+                                className='text-black'/>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+        </div>
     )
 }
 
