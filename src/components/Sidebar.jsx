@@ -2,8 +2,10 @@ import useActiveRoute from 'hooks/useActiveRoute'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import ImagenLogo from './ImagenLogo'
+import { useAuth0 } from "@auth0/auth0-react"
 
 const Sidebar = () => {
+    const { logout } = useAuth0();
     return (
         <nav className="bg-gray-800">
             <ul className='flex w-full justify-between my-4 px-4'>
@@ -25,7 +27,8 @@ const Sidebar = () => {
                 </li>
                 <li className='flex items-center px-3'>
                     <Link to='/'>
-                        <button className='bg-gray-800 border border-white p-1 px-3 text-gray-400 rounded-full hover:bg-gray-400 hover:text-gray-900 font-bold'>
+                        <button onClick={() => logout({ returnTo: window.location.origin })}
+                        className='bg-gray-800 border border-white p-1 px-3 text-gray-400 rounded-full hover:bg-gray-400 hover:text-gray-900 font-bold'>
                             Cerrar Sesión
                         </button>
                     </Link>
