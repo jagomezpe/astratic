@@ -164,7 +164,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             {edit ?
                 <>
                     <td className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold bg-transparent min-w-full py-1'>
-                        {infoNuevoUsuario._id}
+                        {infoNuevoUsuario._id.slice(19)}
                     </td>
                     <td><input type="text" value={infoNuevoUsuario.documentoIdentidad} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, documentoIdentidad:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
