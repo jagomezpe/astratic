@@ -17,7 +17,9 @@ function App() {
     <Auth0Provider
     domain="astra-tic-empresa.us.auth0.com"
     clientId="IJ4ySwfpvIbKhXo64zBRurOwuo4w2CTI"
-    redirectUri={window.location.origin}>
+    redirectUri="http://localhost:3000/admin"
+    audience="api-autenticacion-astra-tic">
+
       <Router>
         <Switch>
           <Route path={['/admin', '/admin/productos', '/admin/ventas', '/admin/usuarios']}>

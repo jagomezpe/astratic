@@ -4,24 +4,32 @@ import { ToastContainer, toast, Slide } from 'react-toastify'
 import { Dialog, Tooltip } from '@material-ui/core'
 import 'react-toastify/dist/ReactToastify.css'
 import { obtenerUsuarios, crearUsuario, editarUsuario, eliminarUsuario } from 'utils/api';
+import ReactLoading from 'react-loading';
 
 const Usuarios = () => {
     const [mostrarTabla, setMostrarTabla] = useState(true)
     const [usuarios, setUsuarios] = useState([])
     const [textoBoton, setTextoBoton] = useState("Añadir Nuevo Usuario")
     const [ejecutarConsulta, setEjecutarConsulta] = useState(true)
+    const [loading, setLoading ] = useState(false)
 
     useEffect(() => {
-        if(ejecutarConsulta) {
-            obtenerUsuarios (
+        const fetchUsuarios = async () => {
+            setLoading(true)
+            await obtenerUsuarios (
                 (response) => {
                     setUsuarios(response.data)
+                    setEjecutarConsulta(false)
+                    setLoading(false)
                 },
                 (error) => {
                     console.log(error)
+                    setLoading(false)
                 }
             )
-            setEjecutarConsulta(false)
+        }
+        if(ejecutarConsulta) {
+            fetchUsuarios()
         }
     }, [ejecutarConsulta])
 
@@ -48,7 +56,7 @@ const Usuarios = () => {
                     {textoBoton}
                 </button>
             </div>
-            {mostrarTabla ? <TablaUsuarios listaUsuarios={usuarios} setEjecutarConsulta={setEjecutarConsulta}/> : 
+            {mostrarTabla ? <TablaUsuarios loading={loading} listaUsuarios={usuarios} setEjecutarConsulta={setEjecutarConsulta}/> : 
             <FormularioCreacionUsuario setMostrarTabla = {setMostrarTabla} listaUsuarios = {usuarios} setUsuarios= {setUsuarios}/>}
             <ToastContainer
             position="bottom-center"
@@ -57,7 +65,7 @@ const Usuarios = () => {
     )
 }
 
-const TablaUsuarios = ({listaUsuarios, setEjecutarConsulta}) => {
+const TablaUsuarios = ({loading, listaUsuarios, setEjecutarConsulta}) => {
     const [busqueda, setBusqueda] = useState('')
     const [usuariosFiltrados, setUsuariosFlitrados] = useState(listaUsuarios)
 
@@ -80,6 +88,7 @@ const TablaUsuarios = ({listaUsuarios, setEjecutarConsulta}) => {
             </div>
             <div className="container flex justify-center">
                 <form className='w-full flex justify-center'>
+                    {loading ? <ReactLoading type='spin' color='#ffffff' height={667} width={375}/> :
                     <table className='tabla w-11/12'>
                         <thead>
                             <tr className='text-center'>
@@ -102,6 +111,7 @@ const TablaUsuarios = ({listaUsuarios, setEjecutarConsulta}) => {
                             })}
                         </tbody>
                     </table>
+                    }
                 </form>
             </div>  
         </div>
