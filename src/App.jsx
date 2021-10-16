@@ -11,8 +11,12 @@ import PublicLayout from 'layouts/PublicLayout';
 import PrivateLayout from 'layouts/PrivateLayout';
 import AuthLayout from 'layouts/AuthLayout';
 import { Auth0Provider } from "@auth0/auth0-react";
+import { UserContext } from 'context/userContext';
+import { useState } from 'react';
 
 function App() {
+  const [userData, setUserData] = useState({})
+
   return (
     <Auth0Provider
     domain="astra-tic-empresa.us.auth0.com"
@@ -20,6 +24,7 @@ function App() {
     redirectUri="http://localhost:3000/admin"
     audience="api-autenticacion-astra-tic">
 
+      <UserContext.Provider value={{userData, setUserData}}>
       <Router>
         <Switch>
           <Route path={['/admin', '/admin/productos', '/admin/ventas', '/admin/usuarios']}>
@@ -63,6 +68,7 @@ function App() {
           </Route>
         </Switch>
       </Router>
+      </UserContext.Provider>
     </Auth0Provider>
   );
 }
