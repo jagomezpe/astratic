@@ -5,6 +5,7 @@ import { Dialog, Tooltip } from '@material-ui/core'
 import 'react-toastify/dist/ReactToastify.css'
 import { obtenerUsuarios, crearUsuario, editarUsuario, eliminarUsuario } from 'utils/api';
 import ReactLoading from 'react-loading';
+import PrivateComponent from 'components/PrivateComponent';
 
 const Usuarios = () => {
     const [mostrarTabla, setMostrarTabla] = useState(true)
@@ -51,10 +52,12 @@ const Usuarios = () => {
         <div className='flex flex-col'>
             <h2 className='text-center text-4xl font-bold text-white mt-14'>Administración de Usuarios</h2>
             <div className='flex justify-center mt-10 mb-7'>
+                <PrivateComponent roleList={["Administrador"]}>
                 <button onClick={()=>{setMostrarTabla(!mostrarTabla)}}
                 className='flex justify-center bg-gray-900 p-2 text-blue-500 rounded-full border border-blue-500 hover:bg-blue-200 hover:text-blue-700 font-semibold text-base w-1/6'>
                     {textoBoton}
                 </button>
+                </PrivateComponent>
             </div>
             {mostrarTabla ? <TablaUsuarios loading={loading} listaUsuarios={usuarios} setEjecutarConsulta={setEjecutarConsulta}/> : 
             <FormularioCreacionUsuario setMostrarTabla = {setMostrarTabla} listaUsuarios = {usuarios} setUsuarios= {setUsuarios}/>}
@@ -95,12 +98,13 @@ const TablaUsuarios = ({loading, listaUsuarios, setEjecutarConsulta}) => {
                                 <th>ID</th>
                                 <th>Documento</th>
                                 <th>Nombre</th>
-                                <th>Apellidos</th>
                                 <th>Número Celular</th>
                                 <th>Correo Electónico</th>
                                 <th>Rol</th>
                                 <th>Estado</th>
-                                <th>Acciones</th>
+                                <PrivateComponent roleList={['Administrador']}>
+                                    <th>Acciones</th>
+                                </PrivateComponent>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,10 +128,9 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
     const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
         _id: usuario._id,
         documentoIdentidad: usuario.documentoIdentidad,
-        nombre: usuario.nombre,
-        apellidos: usuario.apellidos,
+        name: usuario.name,
         numeroCelular: usuario.numeroCelular,
-        correoElectronico: usuario.correoElectronico,
+        email: usuario.email,
         rol: usuario.rol,
         estado: usuario.estado,
     })
@@ -137,9 +140,8 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             {   
             documentoIdentidad: infoNuevoUsuario.documentoIdentidad,
             nombre: infoNuevoUsuario.nombre,
-            apellidos: infoNuevoUsuario.apellidos,
             numeroCelular: infoNuevoUsuario.numeroCelular,
-            correoElectronico: infoNuevoUsuario.correoElectronico,
+            email: infoNuevoUsuario.email,
             rol: infoNuevoUsuario.rol,
             estado: infoNuevoUsuario.estado,
             },
@@ -178,13 +180,11 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
                     </td>
                     <td><input type="text" value={infoNuevoUsuario.documentoIdentidad} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, documentoIdentidad:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
-                    <td><input type="text" value={infoNuevoUsuario.nombre} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, nombre:e.target.value})}
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
-                    <td><input type="text" value={infoNuevoUsuario.apellidos} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, apellidos:e.target.value})}
+                    <td><input type="text" value={infoNuevoUsuario.name} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, name:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
                     <td><input type="tel" value={infoNuevoUsuario.numeroCelular} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, numeroCelular:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
-                    <td><input type="email" value={infoNuevoUsuario.correoElectronico} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, correoElectronico:e.target.value})}
+                    <td><input type="email" value={infoNuevoUsuario.email} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, email:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
                     <td>
                         <select value={infoNuevoUsuario.rol} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, rol:e.target.value})}
@@ -209,47 +209,48 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             <>
             <td>{usuario._id.slice(19)}</td>
             <td>{usuario.documentoIdentidad}</td>
-            <td>{usuario.nombre}</td>
-            <td>{usuario.apellidos}</td>
+            <td>{usuario.name}</td>
             <td>{usuario.numeroCelular}</td>
-            <td>{usuario.correoElectronico}</td>
+            <td>{usuario.email}</td>
             <td>{usuario.rol}</td>
             <td>{usuario.estado}</td>
             </> }
-            <td>
-                <div className='flex w-full justify-around'>
-                    {edit ?
-                    <>
-                        <Tooltip title='Confirmar cambios' arrow placement='top'>
-                            <i onClick={()=> actualizarUsuario()} className="fas fa-check-circle hover:text-green-400"/>
-                        </Tooltip>
-                        <Tooltip title='Cancelar cambios' arrow placement='top'>
-                            <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
-                        </Tooltip>
-                    </>
-                    :
-                    <>
-                        <Tooltip title='Editar Usuario' arrow placement='top'>
-                            <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
-                        </Tooltip>
-                        <Tooltip title='Eliminar Usuario' arrow placement='top'> 
-                            <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
-                        </Tooltip>  
-                    </>               
-                    }
-                </div>
-                <Dialog open={openDialog}>
-                    <div className='flex flex-col p-8'>
-                        <h2 className='text-center text-gray-900 font-semibold text-2xl'>¿Está seguro de eliminar el usuario?</h2>
-                        <div className='flex justify-around mt-6'>
-                            <button onClick={()=> deleteUser()}
-                            className='px-4 py-2 bg-blue-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-blue-600'>Aceptar</button>
-                            <button onClick={()=> setOpenDialog(false)}
-                            className='px-4 py-2 bg-red-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-red-600'>Cancelar</button>
-                        </div>
+            <PrivateComponent roleList={['Administrador']}>
+                <td>
+                    <div className='flex w-full justify-around'>
+                        {edit ?
+                        <>
+                            <Tooltip title='Confirmar cambios' arrow placement='top'>
+                                <i onClick={()=> actualizarUsuario()} className="fas fa-check-circle hover:text-green-400"/>
+                            </Tooltip>
+                            <Tooltip title='Cancelar cambios' arrow placement='top'>
+                                <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
+                            </Tooltip>
+                        </>
+                        :
+                        <>
+                            <Tooltip title='Editar Usuario' arrow placement='top'>
+                                <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
+                            </Tooltip>
+                            <Tooltip title='Eliminar Usuario' arrow placement='top'> 
+                                <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
+                            </Tooltip>  
+                        </>               
+                        }
                     </div>
-                </Dialog>
-            </td>
+                    <Dialog open={openDialog}>
+                        <div className='flex flex-col p-8'>
+                            <h2 className='text-center text-gray-900 font-semibold text-2xl'>¿Está seguro de eliminar el usuario?</h2>
+                            <div className='flex justify-around mt-6'>
+                                <button onClick={()=> deleteUser()}
+                                className='px-4 py-2 bg-blue-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-blue-600'>Aceptar</button>
+                                <button onClick={()=> setOpenDialog(false)}
+                                className='px-4 py-2 bg-red-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-red-600'>Cancelar</button>
+                            </div>
+                        </div>
+                    </Dialog>
+                </td>
+            </PrivateComponent>
         </tr>
     )
 }
@@ -268,10 +269,9 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
 
         await crearUsuario({
             documentoIdentidad: nuevoUsuario.documentoIdentidad,
-            nombre: nuevoUsuario.nombre,
-            apellidos: nuevoUsuario.apellidos,
+            name: nuevoUsuario.name,
             numeroCelular: nuevoUsuario.numeroCelular,
-            correoElectronico: nuevoUsuario.correoElectronico,
+            email: nuevoUsuario.email,
             rol: nuevoUsuario.rol,
             estado: nuevoUsuario.estado
         }, (response) => {
@@ -295,31 +295,25 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="nombre" className="ml-8 mb-4">
-                    <h6 className='text-gray-200 font-semibold text-xs'>Nombre</h6>
-                    <input type="text" name="nombre"
+                <label htmlFor="name" className="ml-8 mb-4">
+                    <h6 className='text-gray-200 font-semibold text-xs'>Nombre Completo</h6>
+                    <input type="text" name="name"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="apellidos" className="mr-8 mb-4">
-                    <h6 className='text-gray-200 font-semibold text-xs'>Apellidos</h6>
-                    <input type="text" name="apellidos"
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
-                    required/>
-                </label>
-                <label htmlFor="numeroCelular" className="ml-8 mb-4">
+                <label htmlFor="numeroCelular" className="mr-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Número Celular</h6>
-                    <input type="tel" name="numeroCelular"
+                    <input type="text" name="numeroCelular"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="correoElectronico" className="mr-8 mb-4">
+                <label htmlFor="email" className="ml-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Correo Electrónico</h6>
-                    <input type="email" name="correoElectronico"
+                    <input type="tel" name="email"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="rol" className="ml-8 mb-4">
+                <label htmlFor="rol" className="mr-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Rol</h6>
                     <select name="rol"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
@@ -330,7 +324,7 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
                         <option>No Asignado</option>
                     </select>
                 </label>
-                <label htmlFor="estado" className="mr-8 mb-4">
+                <label htmlFor="estado" className="ml-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Estado</h6>
                     <select name="estado"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'

@@ -5,6 +5,7 @@ import { Dialog, Tooltip } from '@material-ui/core'
 import 'react-toastify/dist/ReactToastify.css'
 import { obtenerProductos, crearProducto, editarProducto, eliminarProducto } from 'utils/api';
 import ReactLoading from 'react-loading';
+import PrivateComponent from 'components/PrivateComponent';
 
 const Productos = () => {
     const [mostrarTabla, setMostrarTabla] = useState(true)
@@ -51,10 +52,12 @@ const Productos = () => {
         <div className='flex flex-col'>
             <h2 className='text-center text-4xl font-bold text-white mt-14'>Administración de Productos</h2>
             <div className='flex justify-center mt-10 mb-7'>
+                <PrivateComponent roleList={['Administrador']}>
                 <button onClick={()=>{setMostrarTabla(!mostrarTabla)}}
                 className='flex justify-center bg-gray-900 p-2 text-blue-500 rounded-full border border-blue-500 hover:bg-blue-200 hover:text-blue-700 font-semibold text-base w-1/6'>
                     {textoBoton}
                 </button>
+                </PrivateComponent>
             </div>
             {mostrarTabla ? <TablaProductos loading={loading} listaProductos={productos} setEjecutarConsulta={setEjecutarConsulta}/> : 
             <FormularioCreacionProducto setMostrarTabla = {setMostrarTabla} listaProductos = {productos} setProductos= {setProductos}/>}
@@ -97,7 +100,9 @@ const TablaProductos = ({loading, listaProductos, setEjecutarConsulta}) => {
                                 <th>Descripción</th>
                                 <th>Valor Unitario</th>
                                 <th>Estado</th>
-                                <th>Acciones</th>
+                                <PrivateComponent roleList={['Administrador']}>
+                                    <th>Acciones</th>
+                                </PrivateComponent>
                             </tr>
                         </thead>
                         <tbody>
@@ -190,40 +195,42 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
             <td>{producto.valorUnitario}</td>
             <td>{producto.estado}</td>
             </> }
-            <td>
-                <div className='flex w-full justify-around'>
-                    {edit ?
-                    <>
-                        <Tooltip title='Confirmar cambios' arrow placement='top'>
-                            <i onClick={()=> actualizarProducto()} className="fas fa-check-circle hover:text-green-400"/>
-                        </Tooltip>
-                        <Tooltip title='Cancelar cambios' arrow placement='top'>
-                            <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
-                        </Tooltip>
-                    </>
-                    :
-                    <>
-                        <Tooltip title='Editar Producto' arrow placement='top'>
-                            <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
-                        </Tooltip>
-                        <Tooltip title='Eliminar Producto' arrow placement='top'> 
-                            <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
-                        </Tooltip>  
-                    </>               
-                    }
-                </div>
-                <Dialog open={openDialog}>
-                    <div className='flex flex-col p-8'>
-                        <h2 className='text-center text-gray-900 font-semibold text-2xl'>¿Está seguro de eliminar el producto?</h2>
-                        <div className='flex justify-around mt-6'>
-                            <button onClick={()=> deletProduct()}
-                            className='px-4 py-2 bg-blue-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-blue-600'>Aceptar</button>
-                            <button onClick={()=> setOpenDialog(false)}
-                            className='px-4 py-2 bg-red-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-red-600'>Cancelar</button>
-                        </div>
+            <PrivateComponent roleList={['Administrador']}>
+                <td>
+                    <div className='flex w-full justify-around'>
+                        {edit ?
+                        <>
+                            <Tooltip title='Confirmar cambios' arrow placement='top'>
+                                <i onClick={()=> actualizarProducto()} className="fas fa-check-circle hover:text-green-400"/>
+                            </Tooltip>
+                            <Tooltip title='Cancelar cambios' arrow placement='top'>
+                                <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
+                            </Tooltip>
+                        </>
+                        :
+                        <>
+                            <Tooltip title='Editar Producto' arrow placement='top'>
+                                <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
+                            </Tooltip>
+                            <Tooltip title='Eliminar Producto' arrow placement='top'> 
+                                <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
+                            </Tooltip>  
+                        </>               
+                        }
                     </div>
-                </Dialog>
-            </td>
+                    <Dialog open={openDialog}>
+                        <div className='flex flex-col p-8'>
+                            <h2 className='text-center text-gray-900 font-semibold text-2xl'>¿Está seguro de eliminar el producto?</h2>
+                            <div className='flex justify-around mt-6'>
+                                <button onClick={()=> deletProduct()}
+                                className='px-4 py-2 bg-blue-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-blue-600'>Aceptar</button>
+                                <button onClick={()=> setOpenDialog(false)}
+                                className='px-4 py-2 bg-red-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-red-600'>Cancelar</button>
+                            </div>
+                        </div>
+                    </Dialog>
+                </td>
+            </PrivateComponent>
         </tr>
     )
 }
