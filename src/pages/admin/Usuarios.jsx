@@ -91,7 +91,7 @@ const TablaUsuarios = ({loading, listaUsuarios, setEjecutarConsulta}) => {
             </div>
             <div className="container flex justify-center">
                 <form className='w-full flex justify-center'>
-                    {loading ? <ReactLoading type='spin' color='#ffffff' height={667} width={375}/> :
+                    {loading ? <ReactLoading type='spin' color='#ffffff' height={200} width={200}/> :
                     <table className='tabla w-11/12'>
                         <thead>
                             <tr className='text-center'>
@@ -100,11 +100,9 @@ const TablaUsuarios = ({loading, listaUsuarios, setEjecutarConsulta}) => {
                                 <th>Nombre</th>
                                 <th>Número Celular</th>
                                 <th>Correo Electónico</th>
-                                <th>Rol</th>
                                 <th>Estado</th>
-                                <PrivateComponent roleList={['Administrador']}>
-                                    <th>Acciones</th>
-                                </PrivateComponent>
+                                <th>Rol</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -131,8 +129,8 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
         name: usuario.name,
         numeroCelular: usuario.numeroCelular,
         email: usuario.email,
-        rol: usuario.rol,
         estado: usuario.estado,
+        rol: usuario.rol,
     })
 
     const actualizarUsuario = async () => {
@@ -142,8 +140,8 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             nombre: infoNuevoUsuario.nombre,
             numeroCelular: infoNuevoUsuario.numeroCelular,
             email: infoNuevoUsuario.email,
-            rol: infoNuevoUsuario.rol,
             estado: infoNuevoUsuario.estado,
+            rol: infoNuevoUsuario.rol,
             },
             (response) => {
                 console.log(response.data);
@@ -187,21 +185,21 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
                     <td><input type="email" value={infoNuevoUsuario.email} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, email:e.target.value})}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/></td>
                     <td>
+                        <select value={infoNuevoUsuario.estado} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, estado:e.target.value})}
+                        className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'
+                        defaultValue={0}>
+                            <option>AUTORIZADO</option>
+                            <option>PENDIENTE</option>
+                            <option>NO AUTORIZADO</option>
+                        </select>
+                    </td>
+                    <td>
                         <select value={infoNuevoUsuario.rol} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, rol:e.target.value})}
                         className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'
                         defaultValue={0}>
                             <option>Administrador</option>
                             <option>Vendedor</option>
                             <option>No Asignado</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select value={infoNuevoUsuario.estado} onChange={e=>setInfoNuevoUsuario({...infoNuevoUsuario, estado:e.target.value})}
-                        className='focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white hover:bg-blue-500 min-w-full py-1'
-                        defaultValue={0}>
-                            <option>AUTORIZADO</option>
-                            <option>NO AUTORIZADO</option>
-                            <option>PENDIENTE</option>
                         </select>
                     </td>
                 </>    
@@ -212,31 +210,30 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
             <td>{usuario.name}</td>
             <td>{usuario.numeroCelular}</td>
             <td>{usuario.email}</td>
-            <td>{usuario.rol}</td>
             <td>{usuario.estado}</td>
+            <td>{usuario.rol}</td>
             </> }
-            <PrivateComponent roleList={['Administrador']}>
                 <td>
                     <div className='flex w-full justify-around'>
                         {edit ?
                         <>
-                            <Tooltip title='Confirmar cambios' arrow placement='top'>
-                                <i onClick={()=> actualizarUsuario()} className="fas fa-check-circle hover:text-green-400"/>
-                            </Tooltip>
-                            <Tooltip title='Cancelar cambios' arrow placement='top'>
-                                <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
-                            </Tooltip>
-                        </>
-                        :
-                        <>
-                            <Tooltip title='Editar Usuario' arrow placement='top'>
-                                <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
-                            </Tooltip>
-                            <Tooltip title='Eliminar Usuario' arrow placement='top'> 
-                                <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
-                            </Tooltip>  
-                        </>               
-                        }
+                        <Tooltip title='Confirmar cambios' arrow placement='top'>
+                            <i onClick={()=> actualizarUsuario()} className="fas fa-check-circle hover:text-green-400"/>
+                        </Tooltip>
+                        <Tooltip title='Cancelar cambios' arrow placement='top'>
+                            <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
+                        </Tooltip>
+                    </>
+                    :
+                    <>
+                        <Tooltip title='Editar Usuario' arrow placement='top'>
+                            <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
+                        </Tooltip>
+                        <Tooltip title='Eliminar Usuario' arrow placement='top'> 
+                            <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
+                        </Tooltip>  
+                    </>               
+                    }
                     </div>
                     <Dialog open={openDialog}>
                         <div className='flex flex-col p-8'>
@@ -249,8 +246,7 @@ const FilaUsuario = ({ usuario, setEjecutarConsulta }) => {
                             </div>
                         </div>
                     </Dialog>
-                </td>
-            </PrivateComponent>
+            </td>
         </tr>
     )
 }
@@ -272,8 +268,8 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
             name: nuevoUsuario.name,
             numeroCelular: nuevoUsuario.numeroCelular,
             email: nuevoUsuario.email,
-            rol: nuevoUsuario.rol,
-            estado: nuevoUsuario.estado
+            estado: nuevoUsuario.estado,
+            rol: nuevoUsuario.rol
         }, (response) => {
             console.log(response.data)
             toast.success("Usuario agregado con éxito", {theme:"colored", transition: Slide})
@@ -313,7 +309,18 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
                     required/>
                 </label>
-                <label htmlFor="rol" className="mr-8 mb-4">
+                <label htmlFor="estado" className="mr-8 mb-4">
+                    <h6 className='text-gray-200 font-semibold text-xs'>Estado</h6>
+                    <select name="estado"
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
+                    required defaultValue={0}>
+                        <option disabled value={0}>Seleccione el Estado</option>
+                        <option>AUTORIZADO</option>
+                        <option>PENDIENTE</option>
+                        <option>NO AUTORIZADO</option>
+                    </select>
+                </label>
+                <label htmlFor="rol" className="ml-8 mb-4">
                     <h6 className='text-gray-200 font-semibold text-xs'>Rol</h6>
                     <select name="rol"
                     className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
@@ -322,17 +329,6 @@ const FormularioCreacionUsuario = ({setMostrarTabla, listaUsuarios, setUsuarios}
                         <option>Administrador</option>
                         <option>Vendedor</option>
                         <option>No Asignado</option>
-                    </select>
-                </label>
-                <label htmlFor="estado" className="ml-8 mb-4">
-                    <h6 className='text-gray-200 font-semibold text-xs'>Estado</h6>
-                    <select name="estado"
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
-                    required defaultValue={0}>
-                        <option disabled value={0}>Seleccione el Estado</option>
-                        <option>AUTORIZADO</option>
-                        <option>NO AUTORIZADO</option>
-                        <option>PENDIENTE</option>
                     </select>
                 </label>
                 <div className='col-span-2 flex justify-end mt-4 mb-5'>

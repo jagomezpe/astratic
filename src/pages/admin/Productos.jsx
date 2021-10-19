@@ -91,7 +91,7 @@ const TablaProductos = ({loading, listaProductos, setEjecutarConsulta}) => {
             </div>
             <div className="container flex justify-center">
                 <form className='w-full flex justify-center'>
-                    {loading ? <ReactLoading type='spin' color='#ffffff' height={667} width={375}/> :
+                    {loading ? <ReactLoading type='spin' color='#ffffff' height={200} width={200}/> :
                     <table className='tabla w-11/12'>
                         <thead>
                             <tr className='text-center'>
@@ -100,9 +100,7 @@ const TablaProductos = ({loading, listaProductos, setEjecutarConsulta}) => {
                                 <th>Descripción</th>
                                 <th>Valor Unitario</th>
                                 <th>Estado</th>
-                                <PrivateComponent roleList={['Administrador']}>
-                                    <th>Acciones</th>
-                                </PrivateComponent>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -195,42 +193,40 @@ const FilaProducto = ({ producto, setEjecutarConsulta }) => {
             <td>{producto.valorUnitario}</td>
             <td>{producto.estado}</td>
             </> }
-            <PrivateComponent roleList={['Administrador']}>
-                <td>
-                    <div className='flex w-full justify-around'>
-                        {edit ?
-                        <>
-                            <Tooltip title='Confirmar cambios' arrow placement='top'>
-                                <i onClick={()=> actualizarProducto()} className="fas fa-check-circle hover:text-green-400"/>
-                            </Tooltip>
-                            <Tooltip title='Cancelar cambios' arrow placement='top'>
-                                <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
-                            </Tooltip>
-                        </>
-                        :
-                        <>
-                            <Tooltip title='Editar Producto' arrow placement='top'>
-                                <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
-                            </Tooltip>
-                            <Tooltip title='Eliminar Producto' arrow placement='top'> 
-                                <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
-                            </Tooltip>  
-                        </>               
-                        }
-                    </div>
-                    <Dialog open={openDialog}>
-                        <div className='flex flex-col p-8'>
-                            <h2 className='text-center text-gray-900 font-semibold text-2xl'>¿Está seguro de eliminar el producto?</h2>
-                            <div className='flex justify-around mt-6'>
-                                <button onClick={()=> deletProduct()}
-                                className='px-4 py-2 bg-blue-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-blue-600'>Aceptar</button>
-                                <button onClick={()=> setOpenDialog(false)}
-                                className='px-4 py-2 bg-red-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-red-600'>Cancelar</button>
-                            </div>
+            <td>
+                <div className='flex w-full justify-around'>
+                    {edit ?
+                    <>
+                        <Tooltip title='Confirmar cambios' arrow placement='top'>
+                            <i onClick={()=> actualizarProducto()} className="fas fa-check-circle hover:text-green-400"/>
+                        </Tooltip>
+                        <Tooltip title='Cancelar cambios' arrow placement='top'>
+                            <i onClick={()=> setEdit(!edit)} className="fas fa-ban hover:text-red-500"/>
+                        </Tooltip>
+                    </>
+                    :
+                    <>
+                        <Tooltip title='Editar Producto' arrow placement='top'>
+                            <i onClick={()=> setEdit(!edit)} className="fas fa-edit hover:text-yellow-400"/>
+                        </Tooltip>
+                        <Tooltip title='Eliminar Producto' arrow placement='top'> 
+                            <i onClick={()=> setOpenDialog(true)} className="fas fa-trash-alt hover:text-red-500"/>
+                        </Tooltip>  
+                    </>               
+                    }
+                </div>
+                <Dialog open={openDialog}>
+                    <div className='flex flex-col p-8'>
+                        <h2 className='text-center text-gray-900 font-semibold text-2xl'>¿Está seguro de eliminar el producto?</h2>
+                        <div className='flex justify-around mt-6'>
+                            <button onClick={()=> deletProduct()}
+                            className='px-4 py-2 bg-blue-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-blue-600'>Aceptar</button>
+                            <button onClick={()=> setOpenDialog(false)}
+                            className='px-4 py-2 bg-red-500 text-white text-base font-semibold rounded-full w-1/3 hover:bg-red-600'>Cancelar</button>
                         </div>
-                    </Dialog>
-                </td>
-            </PrivateComponent>
+                    </div>
+                </Dialog>
+            </td>
         </tr>
     )
 }

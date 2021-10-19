@@ -3,9 +3,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import ImagenLogo from './ImagenLogo'
 import { useAuth0 } from "@auth0/auth0-react"
+import PrivateComponent from './PrivateComponent'
 
 const Sidebar = () => {
-    const { logout } = useAuth0();
+    const { user, logout } = useAuth0();
 
     const cerrarSesion = () => {
         logout({ returnTo: 'http://localhost:3000/admin' })
@@ -23,17 +24,24 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li className='flex items-center'>
-                    <Ruta ruta='/admin/productos' nombre='Productos'/>
+                    <PrivateComponent roleList={['Administrador']}>
+                        <Ruta ruta='/admin/productos' nombre='Productos'/>
+                    </PrivateComponent>
                 </li>
                 <li className='flex items-center'>
-                    <Ruta ruta='/admin/ventas' nombre='Ventas'/>
+                    <PrivateComponent roleList={['Administrador', 'Vendedor']}>
+                        <Ruta ruta='/admin/ventas' nombre='Ventas'/>
+                    </PrivateComponent>
                 </li>
                 <li className='flex items-center'>
-                    <Ruta ruta='/admin/usuarios' nombre='Usuarios'/>
+                    <PrivateComponent roleList={['Administrador']}>
+                        <Ruta ruta='/admin/usuarios' nombre='Usuarios'/>
+                    </PrivateComponent>
                 </li>
                 <li className='flex items-center px-3'>
                     <button onClick={() => cerrarSesion()}
-                    className='bg-gray-800 border border-white p-1 px-3 text-gray-400 rounded-full hover:bg-gray-400 hover:text-gray-900 font-bold'>
+                    className='flex items-center bg-gray-800 border border-white py-2 px-3 text-gray-400 rounded-full hover:bg-gray-400 hover:text-gray-900 font-bold'>
+                        <img src={user.picture} className='h-6 w-6 rounded-full mr-3'/>
                         Cerrar Sesión
                     </button>
                 </li>
