@@ -22,7 +22,7 @@ function App() {
     <Auth0Provider
     domain="astra-tic-empresa.us.auth0.com"
     clientId="IJ4ySwfpvIbKhXo64zBRurOwuo4w2CTI"
-    redirectUri="https://radiant-escarpment-02424.herokuapp.com//admin"
+    redirectUri="https://radiant-escarpment-02424.herokuapp.com/admin"
     audience="api-autenticacion-astra-tic">
 
       <UserContext.Provider value={{userData, setUserData}}>
