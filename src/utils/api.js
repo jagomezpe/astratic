@@ -1,5 +1,8 @@
 import axios from "axios"
 
+// const baseURL = 'http://localhost:5050'
+const baseURL = 'https://lit-brook-79598.herokuapp.com'
+
 // CRUD para Usuarios
 
 const getToken = () => {
@@ -8,7 +11,7 @@ const getToken = () => {
 
 export const obtenerUsuarios = async (sucssesCallback, errorCallback) => {
     const options = {
-        method: 'GET', url: 'http://localhost:5050/usuarios/',
+        method: 'GET', url: `${baseURL}/usuarios/`,
         headers: {Authorization: getToken()}
     };
     await axios.request(options).then(sucssesCallback).catch(errorCallback)
@@ -16,7 +19,7 @@ export const obtenerUsuarios = async (sucssesCallback, errorCallback) => {
 
 export const obtenerDatosUsuarios = async (sucssesCallback, errorCallback) => {
     const options = {
-        method: 'GET', url: 'http://localhost:5050/usuarios/self',
+        method: 'GET', url: `${baseURL}/usuarios/self`,
         headers: {Authorization: getToken()} // 3. Enviarle el token al backend
     };
     await axios.request(options).then(sucssesCallback).catch(errorCallback)
@@ -24,7 +27,7 @@ export const obtenerDatosUsuarios = async (sucssesCallback, errorCallback) => {
 
 export const crearUsuario = async (data, sucssesCallback, errorCallback) => {
     const options = {
-        method: 'POST', url: 'http://localhost:5050/usuarios/',
+        method: 'POST', url: `${baseURL}/usuarios/`,
         headers: {'Content-Type': 'application/json', Authorization: getToken()},
         data
     }
@@ -33,7 +36,7 @@ export const crearUsuario = async (data, sucssesCallback, errorCallback) => {
 
 export const editarUsuario = async (id, data, sucssesCallback, errorCallback) => {
     const options = {
-        method: 'PATCH', url: `http://localhost:5050/usuarios/${id}/`,
+        method: 'PATCH', url: `${baseURL}/usuarios/${id}/`,
         headers: {'Content-Type': 'application/json', Authorization: getToken()},
         data
     }
@@ -42,7 +45,7 @@ export const editarUsuario = async (id, data, sucssesCallback, errorCallback) =>
 
 export const eliminarUsuario = async (id, sucssesCallback, errorCallback) => {
     const options = {
-        method: 'DELETE', url: `http://localhost:5050/usuarios/${id}/`,
+        method: 'DELETE', url: `${baseURL}/usuarios/${id}/`,
         headers: {'Content-Type': 'application/json', Authorization: getToken()}
     }
     await axios.request(options).then(sucssesCallback).catch(errorCallback)
@@ -52,7 +55,7 @@ export const eliminarUsuario = async (id, sucssesCallback, errorCallback) => {
 
 export const obtenerProductos = async (sucssesCallback, errorCallback) => {
     const options = {
-        method: 'GET', url: 'http://localhost:5050/productos/',
+        method: 'GET', url: `${baseURL}/productos/`,
         headers: {Authorization: getToken()}
     }
     await axios.request(options).then(sucssesCallback).catch(errorCallback)
@@ -60,7 +63,7 @@ export const obtenerProductos = async (sucssesCallback, errorCallback) => {
 
 export const crearProducto = async (data, sucssesCallback, errorCallback) => {
     const options = {
-        method: 'POST', url: 'http://localhost:5050/productos/',
+        method: 'POST', url: `${baseURL}/productos/`,
         headers: {'Content-Type': 'application/json', Authorization: getToken()},
         data
     }
@@ -69,7 +72,7 @@ export const crearProducto = async (data, sucssesCallback, errorCallback) => {
 
 export const editarProducto = async (id, data, sucssesCallback, errorCallback) => {
     const options = {
-        method: 'PATCH', url: `http://localhost:5050/productos/${id}/`,
+        method: 'PATCH', url: `${baseURL}/productos/${id}/`,
         headers: {'Content-Type': 'application/json', Authorization: getToken()},
         data
     }
@@ -78,7 +81,7 @@ export const editarProducto = async (id, data, sucssesCallback, errorCallback) =
 
 export const eliminarProducto = async (id, sucssesCallback, errorCallback) => {
     const options = {
-        method: 'DELETE', url: `http://localhost:5050/productos/${id}/`,
+        method: 'DELETE', url: `${baseURL}/productos/${id}/`,
         headers: {'Content-Type': 'application/json', Authorization: getToken()}
     }
     await axios.request(options).then(sucssesCallback).catch(errorCallback)
@@ -88,7 +91,7 @@ export const eliminarProducto = async (id, sucssesCallback, errorCallback) => {
 
 export const crearVenta = async (data, sucssesCallback, errorCallback) => {
     const options = {
-        method: 'POST', url: 'http://localhost:5050/ventas/',
+        method: 'POST', url: `${baseURL}/ventas/`,
         headers: {'Content-Type': 'application/json', Authorization: getToken()},
         data
     }
