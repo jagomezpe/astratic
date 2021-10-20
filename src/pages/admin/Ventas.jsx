@@ -53,13 +53,6 @@ const Ventas = () => {
             return null
         }).filter((p) => p)
 
-        Object.keys(nuevaVenta).forEach((k) => {
-            if(k.includes('cantidad')) {
-                const indice = parseInt(k.split('_')[1])
-                listaProductos[indice]['cantidad'] = nuevaVenta[k]
-            }
-        })
-
         const datosVenta = {
             vendedor: vendedores.filter((v) => v._id === nuevaVenta.vendedor)[0],
             cantidad: nuevaVenta.valor,
@@ -133,6 +126,17 @@ const TablaProductos =  ({productos, setProductos, setProductosTabla}) => {
         setProductos([...productos, productoAEliminar])
     }
 
+    const modificarProducto = (producto, cantidad) => {
+        setFilasTabla(filasTabla.map((ft) => {
+            if(ft._id === producto._id) {
+                ft.cantidad = cantidad
+                ft.total = producto.valorUnitario * cantidad
+            }
+            return ft
+        })
+        )
+    }
+
     return (
         <div>
             <div className='flex justify-center'>
@@ -158,39 +162,67 @@ const TablaProductos =  ({productos, setProductos, setProductosTabla}) => {
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Descripción</th>
-                        <th>Valor</th>
                         <th>Estado</th>
                         <th>Cantidad</th>
+                        <th>Valor Unitario</th>
+                        <th>Total</th>
                         <th>Eliminar</th>
                         <th className='hidden'>Input</th>
                     </tr>
                 </thead>
                 <tbody>
                     {filasTabla.map((el, index) => {
-                        return(
-                            <tr key={nanoid()}>
-                                <td>{el._id.slice(19)}</td>
-                                <td>{el.nombre}</td>
-                                <td>{el.descripcion}</td>
-                                <td>{el.valorUnitario}</td>
-                                <td>{el.estado}</td>
-                                <td>
-                                    <label htmlFor={`valor_${index}`}>
-                                        <input type="number" name={`cantidad_${index}`} required
-                                        className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/>
-                                    </label>
-                                </td>
-                                <td>
-                                    <i onClick={() => eliminarProducto(el)} className="fas fa-trash-alt hover:text-red-500 cursor-pointer flex justify-center"/>
-                                </td>
-                                <input hidden defaultValue={el._id} name={`producto_${index}`} required
-                                className='text-black'/>
-                            </tr>
+                        return (
+                            <FilaProducto
+                                key={el._id}
+                                product={el}
+                                index={index}
+                                eliminarProducto={eliminarProducto}
+                                modificarProducto={modificarProducto}
+                            />
                         )
                     })}
                 </tbody>
             </table>
         </div>
+    )
+}
+
+const FilaProducto = ({ product, index, eliminarProducto, modificarProducto }) => {
+    const [producto, setProducto] = useState(product)
+    useEffect (() => {
+        console.log('product', producto)
+    }, [producto])
+    return (
+        <tr>
+            <td>{producto._id.slice(19)}</td>
+            <td>{producto.nombre}</td>
+            <td>{producto.descripcion}</td>
+            <td>{producto.estado}</td>
+            <td>
+                <label htmlFor={`valor_${index}`}>
+                    <input type="number" name={`cantidad_${index}`} required value={producto.cantidad}
+                    onChange={(e) => {
+                        modificarProducto(producto, e.target.value === '' ? '0' : e.target.value)
+                        setProducto({
+                            ...producto,
+                            cantidad: e.target.value === '' ? '0' : e.target.value,
+                            total: parseFloat(producto.valorUnitario) * parseFloat(e.target.value === '' ? '0' : e.target.value)
+                        })
+                    }}
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-transparent hover:border-white min-w-full py-1'/>
+                </label>
+            </td>
+            <td>{producto.valorUnitario}</td>
+            <td>{parseFloat(producto.total ?? 0)}</td>
+            <td>
+                <i onClick={() => eliminarProducto(producto)} className="fas fa-trash-alt hover:text-red-500 cursor-pointer flex justify-center"/>
+            </td>
+            <td className='hidden'>
+                <input hidden defaultValue={producto._id} name={`producto_${index}`} required
+                className='text-black'/>   
+            </td>
+        </tr>
     )
 }
 

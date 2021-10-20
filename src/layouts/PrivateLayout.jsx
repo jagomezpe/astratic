@@ -38,7 +38,7 @@ const PrivateLayout = ({children}) => {
         if(isAuthenticated) {
             fetchAuth0Token()
         }
-    }, [isAuthenticated, getAccessTokenSilently])
+    }, [isAuthenticated, getAccessTokenSilently, logout, setUserData])
 
     if(isLoading || loadingUserInformation) return <div className='flex flex-col justify-center items-center h-screen w-screen bg-gray-900'>
         <ReactLoading type='spin' color='#ffffff' height={350} width={350}/>
