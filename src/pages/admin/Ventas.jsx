@@ -73,7 +73,7 @@ const Ventas = () => {
     return (
         <div>
             <div>
-                <h2 className='text-center text-4xl font-bold text-white mt-14'>Administración de Usuarios</h2>
+                <h2 className='text-center text-4xl font-bold text-white mt-14'>Administración de Ventas</h2>
             </div>
             <h3 className='text-center text-2xl font-semibold text-white mt-3 mb-8'>Crear Nueva Venta</h3>
             <form ref={form} onSubmit={submitForm} className='flex flex-col items-center justify-center mt-8'>
