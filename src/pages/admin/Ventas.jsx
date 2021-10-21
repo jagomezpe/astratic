@@ -73,14 +73,14 @@ const Ventas = () => {
     return (
         <div>
             <div>
-                <h2 className='text-center text-4xl font-bold text-white mt-14'>Administración de Usuarios</h2>
+                <h2 className='text-center text-4xl font-bold text-white mt-14'>Administración de Ventas</h2>
             </div>
             <h3 className='text-center text-2xl font-semibold text-white mt-3 mb-8'>Crear Nueva Venta</h3>
             <form ref={form} onSubmit={submitForm} className='flex flex-col items-center justify-center mt-8'>
                 <label htmlFor="vendedor">
                     <h6 className='text-gray-200 font-semibold text-xs'>Vendedor</h6>
                     <select name="vendedor"
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white max-72 py-2'
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white py-2'
                     defaultValue="" required>
                         <option disabled value="">Seleccione un vendedor</option>
                         {vendedores.map((el) => {
