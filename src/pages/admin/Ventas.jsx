@@ -71,16 +71,16 @@ const Ventas = () => {
     }
 
     return (
-        <div>
+        <div className='w-full'>
             <div>
                 <h2 className='text-center text-4xl font-bold text-white mt-14'>Administración de Ventas</h2>
             </div>
-            <h3 className='text-center text-2xl font-semibold text-white mt-3 mb-8'>Crear Nueva Venta</h3>
-            <form ref={form} onSubmit={submitForm} className='flex flex-col items-center justify-center mt-8'>
-                <label htmlFor="vendedor">
+            <h3 className='text-center text-2xl font-semibold text-white mt-8 mb-8'>Crear Nueva Venta</h3>
+            <form ref={form} onSubmit={submitForm} className='flex flex-col items-center justify-center w-full'>
+                <label htmlFor="vendedor" className='mb-4'>
                     <h6 className='text-gray-200 font-semibold text-xs'>Vendedor</h6>
                     <select name="vendedor"
-                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white py-2'
+                    className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white py-2 w-96'
                     defaultValue="" required>
                         <option disabled value="">Seleccione un vendedor</option>
                         {vendedores.map((el) => {
@@ -93,7 +93,7 @@ const Ventas = () => {
                 
                 <div className='flex justify-center'>
                     <button type="submit"
-                    className='flex justify-center bg-blue-500 p-2 text-white rounded-full hover:bg-blue-600 font-semibold text-base w-max'>
+                    className='flex justify-center bg-blue-500 p-2 px-5 text-white rounded-full hover:bg-blue-600 font-semibold text-base'>
                         Crear Venta
                     </button>
                 </div>
@@ -140,9 +140,9 @@ const TablaProductos =  ({productos, setProductos, setProductosTabla}) => {
     return (
         <div>
             <div className='flex justify-center'>
-                <label htmlFor="producto">
+                <label htmlFor="producto" className='mb-4 mr-5'>
                     <h6 className='text-gray-200 font-semibold text-xs'>Producto</h6>
-                    <select className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white min-w-full py-2'
+                    <select className='appeareance-none focus:outline-none border-b-2 border-gray-400 text-white font-semibold focus:border-blue-500 bg-gray-900 hover:border-white py-2 w-52'
                     value={productoAAgregar._id ?? ""}
                     onChange={e => setProductoAAgregar(productos.filter((v) => v._id === e.target.value)[0])}>
                         <option disabled value="">Seleccione un producto</option>
@@ -151,12 +151,14 @@ const TablaProductos =  ({productos, setProductos, setProductosTabla}) => {
                         })}
                     </select>
                 </label>
-                <button type="button" onClick={() => agregarNuevoProducto()}
-                className='flex justify-center items-center bg-gray-900 p-2 text-blue-500 rounded-full border border-blue-500 hover:bg-blue-200 hover:text-blue-700 font-semibold text-base'>
-                    Agregar Producto
-                </button>
+                <div className='flex items-center'>
+                    <button type="button" onClick={() => agregarNuevoProducto()}
+                    className='flex justify-center items-center bg-gray-900 p-2 text-blue-500 rounded-full border border-blue-500 hover:bg-blue-200 hover:text-blue-700 font-semibold text-center px-3'>
+                        Agregar Producto
+                    </button>
+                </div>
             </div>
-            <table className='tabla max-w-screen-lg'>
+            <table className='tabla max-w-screen-lg mt-4 mb-8'>
                 <thead>
                     <tr>
                         <th>ID</th>
